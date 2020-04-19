@@ -1,9 +1,9 @@
 package projects.neldermead;
 
 import util.RandomGenerator;
-
 import java.util.ArrayList;
 
+//TODO: The map has a real probability of being jagged, not contoured, find algorithm for smoother map generation
 public class MapGenerator {
 
     private final int MAX_HEIGHT = 100; //Arbitrarily defined
@@ -27,9 +27,14 @@ public class MapGenerator {
         rand.makeValue(NelderMead.HEIGHT - 1, 1, false);
         max.setY((int) rand.getValue());
 
+        int k = 0;
         for(int i = 0; i < width; i++) {
             for(int j = 0; j < height; j++) {
-
+                rand = new RandomGenerator(k);
+                rand.makeValue(MAX_HEIGHT - 1, 0, false);
+                k = (int) rand.getValue();
+                Point p = new Point(i, j, k);
+                map.add(p);
             }
         }
     }
