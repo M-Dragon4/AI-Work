@@ -3,7 +3,7 @@ package projects.neldermead;
 import util.RandomGenerator;
 import java.util.ArrayList;
 
-//TODO: The map has a real probability of being jagged, not contoured, find algorithm for smoother map generation
+//TODO: The map has a real probability of being jagged, not contoured, ~~find algorithm for smoother map generation~~ use Perlin Noise
 public class MapGenerator {
 
     private final int MAX_HEIGHT = 100; //Arbitrarily defined
