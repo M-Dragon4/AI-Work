@@ -9,26 +9,29 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * This is a Random Walker project to go along with The Coding Train's Nature of Code video series, but adapted for Java.
- * TODO: Prevent the Walker from going off-screen; make some fun pathfinding techniques for the Walker;
- * figure out how to do the RNG without worrying about negative extrema bias
+ * TODO: Make some fun pathfinding techniques for the Walker
  */
 public class RandomWalker {
 
     private static boolean running = false;
+    public static final int ORIGIN_X = 0;
+    public static final int ORIGIN_Y = 0;
     public static final int WIDTH = 640;
     public static final int HEIGHT = 480;
+    public static final Dimension canvasSize = new Dimension(WIDTH, HEIGHT);
     public static Walker prevWalker;
     public static JFrame frame;
     public static Canvas canvas;
 
     public static void init() {
         frame = new JFrame("Random Walker");
-        frame.setSize(WIDTH, HEIGHT);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
         frame.setVisible(true);
         canvas = new Canvas();
+        canvas.setPreferredSize(canvasSize);
         frame.add(canvas);
+        frame.pack();
         prevWalker = new Walker();
         canvas.addWalker(prevWalker);
     }
@@ -71,10 +74,45 @@ public class RandomWalker {
             this.randG.makeUniformValue(3, 0, false);
             System.out.println(this.randG.getValue());
             int choice = (int) this.randG.getValue();
-            if(choice == 0) this.x += WALKER_WIDTH;
-            else if (choice == 1) this.x -= WALKER_WIDTH;
-            else if (choice == 2) this.y += WALKER_HEIGHT;
-            else this.y -= WALKER_HEIGHT;
+
+            if (isAtTopEdge()) y += WALKER_HEIGHT;
+            else if (isAtBottomEdge()) y -= WALKER_HEIGHT;
+            else if (isAtRightEdge()) x -= WALKER_WIDTH;
+            else if (isAtLeftEdge()) x += WALKER_WIDTH;
+            else {
+                if(choice == 0) {
+                    x += WALKER_WIDTH;
+                }
+                else if (choice == 1) {
+                    x -= WALKER_WIDTH;
+                }
+                else if (choice == 2) {
+                    y += WALKER_HEIGHT;
+                }
+                else {
+                    y -= WALKER_HEIGHT;
+                }
+            }
+        }
+
+        public boolean isAtTopEdge() {
+            if (y - WALKER_HEIGHT < ORIGIN_Y) return true;
+            else return false;
+        }
+
+        public boolean isAtBottomEdge() {
+            if (y + WALKER_HEIGHT > HEIGHT - WALKER_HEIGHT) return true;
+            else return false;
+        }
+
+        public boolean isAtRightEdge() {
+            if (x + WALKER_WIDTH > WIDTH - WALKER_WIDTH) return true;
+            else return false;
+        }
+
+        public boolean isAtLeftEdge() {
+            if (x - WALKER_WIDTH < ORIGIN_X) return true;
+            else return false;
         }
 
         public int getWalkerX() {
