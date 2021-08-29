@@ -43,7 +43,7 @@ public class RandomGeneratorTester {
                 System.out.println("Minimum: ");
                 min = (int) in.nextDouble();
                 for (long i = 0; i < numVal; i++) {
-                    rand.makeValue(max, min, false);
+                    rand.makeUniformValue(max, min, false);
                     int value = (int) rand.getValue();
                     Writer.Write(VALUE_PATH, Integer.toString(value));
                 }

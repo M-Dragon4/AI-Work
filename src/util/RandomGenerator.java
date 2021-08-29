@@ -48,7 +48,6 @@ public class RandomGenerator {
 	 * @param rL       the minimum range value
 	 * @param n        the amount of numbers you want to print
 	 * @param floating true if you want an array of floating point numbers; set to false if you want an array of integers
-	 * @return range the range of generated numbers
 	 */
 	public void makeRange(double rH, double rL, long n, boolean floating) {
 		range = new double[(int) n];
@@ -65,10 +64,10 @@ public class RandomGenerator {
 
 	/**
 	 * Generates a pseudo-random number from a given range
+	 * NOTE: This method has the disadvantage of the Java RNG: The extrema are quite unlikely to be rolled; Use makeUniformValue instead
 	 * @param rH		the maximum range value
 	 * @param rL		the minimum range value
 	 * @param floating	true if you want a floating point number; set to false if you want an integer
-	 * @return value the generated number
 	 */
 	public void makeValue(double rH, double rL, boolean floating) {
 		value = 0;
@@ -76,6 +75,32 @@ public class RandomGenerator {
 				value = random.nextDouble() * (rH - rL) + rL;
 		} else {
 				value = Math.round(random.nextDouble() * (rH - rL) + rL);
+		}
+	}
+
+	/**
+	 * Generates a pseudo-random number from a given range; extends the range to account for LCG bias
+	 * @param rH		the maximum range value
+	 * @param rL		the minimum range value
+	 * @param floating	true if you want a floating point number; set to false if you want an integer
+	 */
+	public void makeUniformValue(double rH, double rL, boolean floating) {
+		boolean inRange = false;
+		value = 0;
+		if (floating) {
+			while (!inRange) {
+				value = random.nextDouble() * ((rH + 1) - (rL - 1)) + (rL - 1);
+				if (value >= rL && value <= rH) {
+					break;
+				}
+			}
+		} else {
+			while (!inRange) {
+				value = Math.round(random.nextDouble() * ((rH + 1) - (rL - 1)) + (rL - 1));
+				if (value >= rL && value <= rH) {
+					break;
+				}
+			}
 		}
 	}
 

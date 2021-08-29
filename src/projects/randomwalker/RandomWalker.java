@@ -49,7 +49,7 @@ public class RandomWalker {
         }
     }
 
-    static class Walker extends JPanel {
+    static class Walker {
         private int x, y;
         private final int WALKER_WIDTH = 4;
         private final int WALKER_HEIGHT = 4;
@@ -68,7 +68,7 @@ public class RandomWalker {
         }
 
         public void walk() {
-            this.randG.makeValue(3, 0, false);
+            this.randG.makeUniformValue(3, 0, false);
             System.out.println(this.randG.getValue());
             int choice = (int) this.randG.getValue();
             if(choice == 0) this.x += WALKER_WIDTH;
@@ -78,10 +78,10 @@ public class RandomWalker {
         }
 
         public int getWalkerX() {
-            return this.x;
+            return x;
         }
         public int getWalkerY() {
-            return this.y;
+            return y;
         }
 
         public int getWalkerWidth() {
