@@ -2,12 +2,14 @@ package projects;
 
 import util.RandomGenerator;
 import util.Writer;
-
 import java.io.IOException;
 import java.util.Scanner;
 
 /**
  * Tester class for the Random Generators to see how random they really are
+ * See 'makeValue Distribution.xlsx' for histograms of the algorithm; unfortunately Java's rand() uses LCG and has the
+ * primary disadvantage of omitting the extrema from the uniform distribution (apparent in A, C, and D and magnified in B)
+ * TODO: fix float check
  */
 public class RandomGeneratorTester {
     private static final String VALUE_PATH = "C:/Users/Maxwell/Desktop/AI-Work/src/files/value.txt";
@@ -57,7 +59,10 @@ public class RandomGeneratorTester {
                 }
             }
             System.out.println("See /src/files/value.txt for generated values.");
-        } else if (in.next().equals(RANGE)) {
+        }
+        /*
+         * I don't really need to test the range function, but I may revisit this section later...
+        else if (in.next().equals(RANGE)) {
             try {
                 Writer.CreateFile(RANGE_PATH);
             } catch (IOException e) {
@@ -80,5 +85,6 @@ public class RandomGeneratorTester {
                 //print range to text file
             }
         }
+         */
     }
 }

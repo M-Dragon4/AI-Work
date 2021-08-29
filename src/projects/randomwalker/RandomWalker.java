@@ -9,7 +9,8 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * This is a Random Walker project to go along with The Coding Train's Nature of Code video series, but adapted for Java.
- * TODO: Prevent the Walker from going off-screen; make some fun pathfinding techniques for the Walker (check random generator)
+ * TODO: Prevent the Walker from going off-screen; make some fun pathfinding techniques for the Walker;
+ * figure out how to do the RNG without worrying about negative extrema bias
  */
 public class RandomWalker {
 
