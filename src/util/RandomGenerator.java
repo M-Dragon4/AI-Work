@@ -47,11 +47,11 @@ public class RandomGenerator {
 	 * @param rH       the maximum range value
 	 * @param rL       the minimum range value
 	 * @param n        the amount of numbers you want to print
-	 * @param floating true if you want an array of floating point numbers. Set to false if you want an array of integers
+	 * @param floating true if you want an array of floating point numbers; set to false if you want an array of integers
 	 * @return range the range of generated numbers
 	 */
-	public void makeRange(double rH, double rL, int n, boolean floating) {
-		range = new double[n];
+	public void makeRange(double rH, double rL, long n, boolean floating) {
+		range = new double[(int) n];
 		if (floating) {
 			for (int i = 0; i < n; i++) {
 				range[i] = random.nextDouble() * (rH - rL) + rL;
@@ -67,7 +67,7 @@ public class RandomGenerator {
 	 * Generates a pseudo-random number from a given range
 	 * @param rH		the maximum range value
 	 * @param rL		the minimum range value
-	 * @param floating	true if you want an array of floating point numbers. Set to false if you want an array of integers
+	 * @param floating	true if you want a floating point number; set to false if you want an integer
 	 * @return value the generated number
 	 */
 	public void makeValue(double rH, double rL, boolean floating) {

@@ -19,7 +19,7 @@ public class Shamus
 	private static double normL = 0;
 	private static double datH = 84;
 	private static double datL = 0;
-	private static String path = "C:/Users/Maxwell/Desktop/AI Work/files/shamus.txt";
+	private static String path = "C:/Users/Maxwell/Desktop/AI-Work/src/files/shamus.txt";
 	private static String[] timeString;
 	private static double[] time;
 	
@@ -31,7 +31,6 @@ public class Shamus
 		String tArrival = in.next();
 		
 		Writer.Write(path, tArrival);
-		
 		try
 		{
 			timeString = new String[Reader.Counter(path)];
