@@ -63,7 +63,7 @@ public class RandomGenerator {
 	}
 
 	/**
-	 * Generates a pseudo-random number from a given range
+	 * Generates a pseudo-random number from a given range across a Semi-Uniform Distribution
 	 * NOTE: This method has the disadvantage of the Java RNG: The extrema are quite unlikely to be rolled; Use makeUniformValue instead
 	 * @param rH		the maximum range value
 	 * @param rL		the minimum range value
@@ -79,7 +79,7 @@ public class RandomGenerator {
 	}
 
 	/**
-	 * Generates a pseudo-random number from a given range; extends the range to account for LCG bias
+	 * Generates a pseudo-random number from a given range across a Uniform Distribution; extends the range to account for LCG bias
 	 * @param rH		the maximum range value
 	 * @param rL		the minimum range value
 	 * @param floating	true if you want a floating point number; set to false if you want an integer
@@ -101,6 +101,26 @@ public class RandomGenerator {
 					break;
 				}
 			}
+		}
+	}
+
+	/**
+	 * Generates a pseudo-random number from a given Gaussian Distribution
+	 * @param stddev	the standard deviation of the distribution
+	 * @param mean		the mean of the distribution
+	 * @param floating	true if you want a floating point number; set to false if you want an integer
+	 */
+	public void makeGaussianValue(double stddev, double mean, boolean floating) {
+		value = 0;
+		if (floating) {
+			value = random.nextGaussian();
+			value *= stddev;
+			value += mean;
+		} else {
+			value = random.nextGaussian();
+			value *= stddev;
+			value += mean;
+			value = Math.round(value);
 		}
 	}
 
