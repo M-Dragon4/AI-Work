@@ -9,7 +9,8 @@ import java.util.Scanner;
  * Tester class for the Random Generators to see how random they really are
  * See 'makeValue Distribution.xlsx' for histograms of the algorithm; unfortunately Java's rand() uses LCG and has the
  * primary disadvantage of omitting the extrema from the uniform distribution (apparent in A, C, and D and magnified in B)
- * TODO: fix float check
+ * See 'makeGaussianValue Distribution.xlsx' for histogram of the algorithm
+ * TODO: fix float check;
  */
 public class RandomGeneratorTester {
     private static final String VALUE_PATH = "C:/Users/Maxwell/Desktop/AI-Work/src/files/value.txt";
