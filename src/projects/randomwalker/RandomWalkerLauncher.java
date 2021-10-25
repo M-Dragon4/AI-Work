@@ -2,7 +2,6 @@ package projects.randomwalker;
 
 /**
  * This is a Random Walker project to go along with The Coding Train's Nature of Code video series, but adapted for Java.
- * TODO: Add 'Reset' button
  */
 public class RandomWalkerLauncher {
 

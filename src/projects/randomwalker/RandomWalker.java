@@ -28,6 +28,7 @@ public class RandomWalker implements Runnable //, ActionListener
     public JPanel buttonPanel;
     public JButton walkButton;
     public JButton stopButton;
+    public JButton resetButton;
 
     public void init() {
         frame = new JFrame("Random Walker");
@@ -35,12 +36,14 @@ public class RandomWalker implements Runnable //, ActionListener
 
         walkButton = new JButton("Walk");
         stopButton = new JButton("Stop");
+        resetButton = new JButton("Reset");
 
         buttonPanel = new JPanel();
         buttonPanel.setBackground(Color.WHITE);
         buttonPanel.setPreferredSize(BUTTON_SIZE);
         buttonPanel.add(walkButton);
         buttonPanel.add(stopButton);
+        buttonPanel.add(resetButton);
         canvas = new Canvas();
         canvas.setPreferredSize(CANVAS_SIZE);
 
@@ -83,7 +86,13 @@ public class RandomWalker implements Runnable //, ActionListener
         });
         stopButton.addActionListener(event -> {
             running = false;
-            buttonThread.interrupt();
+        });
+        resetButton.addActionListener(event -> {
+            running = false;
+            canvas.clear();
+            prevWalker = new Walker();
+            canvas.addWalker(prevWalker);
+            canvas.repaint();
         });
     }
 }

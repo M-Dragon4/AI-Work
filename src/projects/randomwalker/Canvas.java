@@ -19,6 +19,10 @@ public class Canvas extends JPanel {
         return walkers.get(i);
     }
 
+    public void clear() {
+        walkers.clear();
+    }
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
