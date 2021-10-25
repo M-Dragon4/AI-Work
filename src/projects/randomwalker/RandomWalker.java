@@ -2,14 +2,13 @@ package projects.randomwalker;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * This is a Random Walker project to go along with The Coding Train's Nature of Code video series, but adapted for Java.
  * TODO: Make some fun pathfinding techniques for the Walker
  */
-public class RandomWalker implements ActionListener, Runnable{
+public class RandomWalker implements Runnable //, ActionListener
+{
 
     private boolean running = false;
     public static final int ORIGIN_X = 0;
@@ -20,9 +19,8 @@ public class RandomWalker implements ActionListener, Runnable{
     public static final int BUTTON_HEIGHT = 36;
     public static final Dimension CANVAS_SIZE = new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT);
     public static final Dimension BUTTON_SIZE = new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT);
-    private final String WALK_COMMAND = "walk";
-    private final String STOP_COMMAND = "stop";
     private final int WAIT = 100; //In milliseconds
+    private Thread buttonThread = null;
     public Walker prevWalker;
     public JFrame frame;
     public JPanel container;
@@ -36,11 +34,7 @@ public class RandomWalker implements ActionListener, Runnable{
         container = new JPanel();
 
         walkButton = new JButton("Walk");
-        walkButton.setActionCommand(WALK_COMMAND);
-        walkButton.addActionListener(this);
         stopButton = new JButton("Stop");
-        stopButton.setActionCommand(STOP_COMMAND);
-        stopButton.addActionListener(this);
 
         buttonPanel = new JPanel();
         buttonPanel.setBackground(Color.WHITE);
@@ -65,30 +59,31 @@ public class RandomWalker implements ActionListener, Runnable{
 
     public void run() {
         init();
-        int i = 0;
-        try {
-            while (running) {
-                Walker walker = new Walker(prevWalker.getWalkerX(), prevWalker.getWalkerY());
-                walker.walk();
-                canvas.addWalker(walker);
-                prevWalker = walker;
-                canvas.repaint();
-                System.out.println(canvas.getWalker(i).getWalkerX() + " | " + canvas.getWalker(i).getWalkerY());
-                Thread.sleep(WAIT);
-                i++;
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if(e.getActionCommand().equals(WALK_COMMAND)) {
-            running = true;
-            run();
-        } else if (e.getActionCommand().equals(STOP_COMMAND)) {
+        walkButton.addActionListener(event -> {
+            buttonThread = new Thread(() -> {
+                running = true;
+                int i = 0;
+                try {
+                    while (running) {
+                        Walker walker = new Walker(prevWalker.getWalkerX(), prevWalker.getWalkerY());
+                        walker.walk();
+                        canvas.addWalker(walker);
+                        prevWalker = walker;
+                        canvas.repaint();
+                        System.out.println(canvas.getWalker(i).getWalkerX() + " | " + canvas.getWalker(i).getWalkerY());
+                        Thread.sleep(WAIT);
+                        i++;
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+            buttonThread.start();
+        });
+        stopButton.addActionListener(event -> {
             running = false;
-        }
+            buttonThread.interrupt();
+        });
     }
 }
