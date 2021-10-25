@@ -7,9 +7,7 @@ import java.awt.*;
  * This is a Random Walker project to go along with The Coding Train's Nature of Code video series, but adapted for Java.
  * TODO: Make some fun pathfinding techniques for the Walker
  */
-public class RandomWalker implements Runnable //, ActionListener
-{
-
+public class RandomWalker implements Runnable {
     private boolean running = false;
     public static final int ORIGIN_X = 0;
     public static final int ORIGIN_Y = 0;

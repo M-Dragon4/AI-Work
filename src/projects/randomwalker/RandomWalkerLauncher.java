@@ -8,7 +8,7 @@ public class RandomWalkerLauncher {
     public static RandomWalker walker = new RandomWalker();
 
     public static void main(String[] args) {
-        Thread t1 = new Thread(walker);
-        t1.start();
+        Thread thread = new Thread(walker);
+        thread.start();
     }
 }
