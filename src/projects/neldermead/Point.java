@@ -2,15 +2,16 @@ package projects.neldermead;
 
 public class Point {
 
-    private int x, y, z;
+    private int x, y;
+    private double z;
 
     /**
      * Empty Constructor
      */
     public Point() {
-        x = 0;
-        y = 0;
-        z = 0;
+        this.x = 0;
+        this.y = 0;
+        this.z = 0;
     }
 
     /**
@@ -19,7 +20,7 @@ public class Point {
      * @param y the y-coordinate of the Point
      * @param z the z-coordinate of the Point
      */
-    public Point(int x, int y, int z) {
+    public Point(int x, int y, double z) {
        this.x = x;
        this.y = y;
        this.z = z;
@@ -41,7 +42,7 @@ public class Point {
         this.y = y;
     }
 
-    public int getZ() {
+    public double getZ() {
         return z;
     }
 
