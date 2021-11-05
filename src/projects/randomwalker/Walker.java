@@ -27,7 +27,7 @@ public class Walker {
     }
 
     public void walk() {
-        this.randG.makeUniformValue(3, 0, false);
+        this.randG.makeUniformValue(3, 0, false); //The 4 cardinal directions
         System.out.println(this.randG.getValue());
         int choice = (int) this.randG.getValue();
 
@@ -36,7 +36,7 @@ public class Walker {
         else if (isAtRightEdge()) x -= WALKER_WIDTH;
         else if (isAtLeftEdge()) x += WALKER_WIDTH;
         else {
-            if(choice == 0) {
+            if (choice == 0) {
                 x += WALKER_WIDTH;
             }
             else if (choice == 1) {
@@ -86,6 +86,7 @@ public class Walker {
         return WALKER_HEIGHT;
     }
 
+    //Unused, I put it here out of habit, but does it just take up space?
     public Walker getWalker() {
         return this;
     }
