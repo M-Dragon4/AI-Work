@@ -2,6 +2,9 @@ package util;
 
 import java.util.Random;
 
+/**
+ * There are a lot of conceptual errors in the below code, so just ignore it lol
+ */
 public class RandomGenerator {
 
 	private Random random = new Random();
