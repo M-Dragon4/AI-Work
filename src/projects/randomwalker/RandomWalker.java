@@ -8,25 +8,26 @@ import java.awt.*;
  * TODO: Make some fun pathfinding techniques for the Walker
  */
 public class RandomWalker implements Runnable {
-    private boolean running = false;
     public static final int ORIGIN_X = 0;
     public static final int ORIGIN_Y = 0;
     public static final int CANVAS_WIDTH = 640;
     public static final int CANVAS_HEIGHT = 480;
-    public static final int BUTTON_WIDTH = 640;
-    public static final int BUTTON_HEIGHT = 36;
+    public static final int BUTTON_WIDTH = CANVAS_WIDTH;
+    public static final int BUTTON_HEIGHT = CANVAS_HEIGHT / 12;
     public static final Dimension CANVAS_SIZE = new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT);
     public static final Dimension BUTTON_SIZE = new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT);
-    private final int WAIT = 100; //In milliseconds
-    private Thread buttonThread = null;
     public Walker prevWalker;
     public JFrame frame;
     public JPanel container;
-    public Canvas canvas;
     public JPanel buttonPanel;
+    public Canvas canvas;
     public JButton walkButton;
     public JButton stopButton;
     public JButton resetButton;
+
+    private final int WAIT = 100; //In milliseconds
+    private boolean running = false;
+    private Thread buttonThread = null;
 
     public void init() {
         frame = new JFrame("Random Walker");
