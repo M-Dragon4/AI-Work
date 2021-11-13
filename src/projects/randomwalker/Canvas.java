@@ -5,7 +5,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class Canvas extends JPanel {
-    private ArrayList<Walker> walkers = new ArrayList<Walker>();
+    private ArrayList<Walker> walkers = new ArrayList<>();
 
     public Canvas() {
         this.setBackground(Color.WHITE);

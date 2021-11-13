@@ -12,10 +12,10 @@ public class RandomWalker implements Runnable {
     public static final int ORIGIN_Y = 0;
     public static final int CANVAS_WIDTH = 640;
     public static final int CANVAS_HEIGHT = 480;
-    public static final int BUTTON_WIDTH = CANVAS_WIDTH;
-    public static final int BUTTON_HEIGHT = CANVAS_HEIGHT / 12;
-    public static final Dimension CANVAS_SIZE = new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT);
-    public static final Dimension BUTTON_SIZE = new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT);
+    public final int BUTTON_WIDTH = CANVAS_WIDTH;
+    public final int BUTTON_HEIGHT = CANVAS_HEIGHT / 12;
+    public final Dimension CANVAS_SIZE = new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT);
+    public final Dimension BUTTON_SIZE = new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT);
     public Walker prevWalker;
     public JFrame frame;
     public JPanel container;
