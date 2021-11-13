@@ -3,9 +3,13 @@ package projects.neldermead;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * TODO: Fix elevation variance from coordinate chaos
+ */
 public class HeightMap {
 
     private ArrayList<Point> map = new ArrayList<>();
+    private double elevationMax, elevationMin;
 
     private final int[] P = new int[512], PERMUTATION = { 151,160,137,91,90,15,
             131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,
@@ -24,10 +28,14 @@ public class HeightMap {
 
     public HeightMap() {
         this.map = null;
+        this.elevationMax = 0.0;
+        this.elevationMin = 0.0;
     }
 
-    public HeightMap(ArrayList<Point> map) {
-        this.map = map;
+    public HeightMap(HeightMap map) {
+        this.map = map.getPoints();
+        this.elevationMax = map.getElevationMax();
+        this.elevationMin = map.getElevationMin();
     }
 
     /**
@@ -39,7 +47,10 @@ public class HeightMap {
      * @param elevationMax the maximum elevation [z] of the map
      * @param elevationMin the minimum elevation [z] of the map
      */
-    public HeightMap(int mapWidth, int mapHeight, int tileWidth, int tileHeight, int elevationMax, int elevationMin) {
+    public HeightMap(int mapWidth, int mapHeight, int tileWidth, int tileHeight, double elevationMax, double elevationMin) {
+        this.elevationMax = elevationMax;
+        this.elevationMin = elevationMin;
+
         for (int i=0; i < 256 ; i++) {
             P[256+i] = P[i] = PERMUTATION[i];
         }
@@ -54,7 +65,10 @@ public class HeightMap {
             x += r.nextDouble();
             y += r.nextDouble();
 
-            this.map.add(new Point(x, y, lerp(noise(x, y), (elevationMin + elevationMax) / 2, elevationMax)));
+            this.map.add(new Point(x, y, lerp(noise(x, y), (elevationMin + elevationMax) / 2, elevationMax), tileWidth, tileHeight));
+//            int elevation = (int) Math.floor(100 * ((map.get(t).getZ() - elevationMin) / (elevationMax - elevationMin)));
+//            elevation -= elevation % 5;
+//            System.out.println(map.get(t).getX() + "  " + map.get(t).getY() + "  " + map.get(t).getZ() + "  " + elevation);
         }
     }
 
@@ -120,5 +134,17 @@ public class HeightMap {
                 return -y - x;
             default: return 0; // never happens
         }
+    }
+
+    public ArrayList<Point> getPoints() {
+        return map;
+    }
+
+    public double getElevationMax() {
+        return elevationMax;
+    }
+
+    public double getElevationMin() {
+        return elevationMin;
     }
 }
