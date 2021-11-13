@@ -1,6 +1,7 @@
 package projects.neldermead;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class HeightMap {
 
@@ -25,19 +26,36 @@ public class HeightMap {
         this.map = null;
     }
 
+    public HeightMap(ArrayList<Point> map) {
+        this.map = map;
+    }
+
+    /**
+     * Generates a Height Map that is, along the z-axis, centered around the median elevation, given the following parameters:
+     * @param mapWidth the width [x] of the map
+     * @param mapHeight the height [y] of the map
+     * @param tileWidth the width [x] of each tile, or Point
+     * @param tileHeight the height [y] of each tile, or Point
+     * @param elevationMax the maximum elevation [z] of the map
+     * @param elevationMin the minimum elevation [z] of the map
+     */
     public HeightMap(int mapWidth, int mapHeight, int tileWidth, int tileHeight, int elevationMax, int elevationMin) {
         for (int i=0; i < 256 ; i++) {
             P[256+i] = P[i] = PERMUTATION[i];
         }
-        for (int i = 0; i <= Math.floor(mapWidth / tileWidth ); i++) {
-            for (int j = 0; j <= Math.floor(mapHeight / tileHeight); j++) {
-                this.map.add(new Point(i, j, elevationMin + noise(i, j) * elevationMax));
-            }
-        }
-    }
 
-    public HeightMap(ArrayList<Point> map) {
-        this.map = map;
+        int numTilesX = mapWidth / tileWidth;
+        int numTilesY = mapHeight / tileHeight;
+
+        for (int t = 0; t < numTilesX * numTilesY; t++) {
+            double x = t % numTilesX;
+            double y = (t - x) / numTilesX;
+            Random r = new Random();
+            x += r.nextDouble();
+            y += r.nextDouble();
+
+            this.map.add(new Point(x, y, lerp(noise(x, y), (elevationMin + elevationMax) / 2, elevationMax)));
+        }
     }
 
     /**
@@ -45,7 +63,7 @@ public class HeightMap {
      * Adapted for 2D
      * @param x the x-coordinate on the map
      * @param y the y-coordinate on the map
-     * @return a value between 0.0 and 1.0 to represent the height of the terrain at (x, y)
+     * @return a value between -1.0 and 1.0 to represent the height of the terrain at (x, y)
      */
     private double noise(double x, double y) {
         int X = (int)Math.floor(x) & 255, Y = (int)Math.floor(y) & 255;
@@ -61,7 +79,7 @@ public class HeightMap {
             BA = P[P[X + 1] + Y    ],
             BB = P[P[X + 1] + Y + 1];
 
-        return lerp(v, lerp(u, grad(P[AA], x, y), grad(P[BA], x - 1, y)), lerp(u, grad(P[AB], x, y- 1), grad(P[BB], x - 1, y - 1)));
+        return lerp(v, lerp(u, grad(P[AA], x, y), grad(P[BA], x - 1, y)), lerp(u, grad(P[AB], x, y - 1), grad(P[BB], x - 1, y - 1)));
     }
 
     private double fade(double t) {
@@ -102,9 +120,5 @@ public class HeightMap {
                 return -y - x;
             default: return 0; // never happens
         }
-    }
-
-    public ArrayList<Point> getMap() {
-        return map;
     }
 }
