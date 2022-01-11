@@ -100,5 +100,6 @@ public class Canvas extends JComponent {
 
     public void regenerate(int canvasWidth, int canvasHeight, int tileWidth, int tileHeight, double elevationMax, double elevationMin) {
         this.map = new HeightMap(canvasWidth, canvasHeight, tileWidth, tileHeight, elevationMax, elevationMin);
+        this.repaint();
     }
 }

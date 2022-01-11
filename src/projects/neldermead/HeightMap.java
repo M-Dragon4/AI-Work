@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * TODO: Fix elevation variance from coordinate chaos
+ * TODO: Fix lack of uniqueness across generations
  */
 public class HeightMap {
 
+    private final double STRETCH_FACTOR = 13.0;
     private ArrayList<Point> map = new ArrayList<>();
     private double elevationMax, elevationMin;
 
@@ -39,7 +40,7 @@ public class HeightMap {
     }
 
     /**
-     * Generates a Height Map that is, along the z-axis, centered around the median elevation, given the following parameters:
+     * Generates a Height Map that is, along an imaginary z-axis, centered around the median elevation, given the following parameters:
      * @param mapWidth the width [x] of the map
      * @param mapHeight the height [y] of the map
      * @param tileWidth the width [x] of each tile, or Point
@@ -58,17 +59,16 @@ public class HeightMap {
         int numTilesX = mapWidth / tileWidth;
         int numTilesY = mapHeight / tileHeight;
 
+        Random r = new Random();
+
         for (int t = 0; t < numTilesX * numTilesY; t++) {
             double x = t % numTilesX;
             double y = (t - x) / numTilesX;
-            Random r = new Random();
+            r = new Random();
             x += r.nextDouble();
             y += r.nextDouble();
 
-            this.map.add(new Point(x, y, lerp(noise(x, y), (elevationMin + elevationMax) / 2, elevationMax), tileWidth, tileHeight));
-            int elevation = (int) Math.floor(100 * ((map.get(t).getZ() - elevationMin) / (elevationMax - elevationMin)));
-            elevation -= elevation % 5;
-            System.out.println(map.get(t).getX() + "  " + map.get(t).getY() + "  " + map.get(t).getZ() + "  " + elevation);
+            this.map.add(new Point(x, y, lerp(noise(x, y, STRETCH_FACTOR), (elevationMin + elevationMax) / 2, elevationMax), tileWidth, tileHeight));
         }
     }
 
@@ -77,9 +77,12 @@ public class HeightMap {
      * Adapted for 2D
      * @param x the x-coordinate on the map
      * @param y the y-coordinate on the map
+     * @param stretch the factor by which adjacent points are smoothed
      * @return a value between -1.0 and 1.0 to represent the height of the terrain at (x, y)
      */
-    private double noise(double x, double y) {
+    private double noise(double x, double y, double stretch) {
+        x /= stretch;
+        y /= stretch;
         int X = (int)Math.floor(x) & 255, Y = (int)Math.floor(y) & 255;
 
         x -= Math.floor(x);

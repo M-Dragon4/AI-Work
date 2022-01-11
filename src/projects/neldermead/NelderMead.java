@@ -6,10 +6,9 @@ import java.awt.*;
 /**
  * This is a visual implementation of the Nelder Mead Algorithm for 2D. The objective of this implementation is to find
  * the highest region on a randomly generated surface (visualized as a topology map)
- * TODO: Draw the map better and implement Nelder Mead; Add button functions
+ * TODO: Implement Nelder Mead; Add button functions
  */
 public class NelderMead implements Runnable {
-    public static HeightMap map;
     public static final int ORIGIN_X = 0;
     public static final int ORIGIN_Y = 0;
     public final int CANVAS_WIDTH = 640;
@@ -76,7 +75,6 @@ public class NelderMead implements Runnable {
         regenerateButton.addActionListener(event -> {
             running = false;
             canvas.regenerate(CANVAS_WIDTH, CANVAS_HEIGHT, TILE_WIDTH, TILE_HEIGHT, ELEVATION_MAX, ELEVATION_MIN);
-            container.repaint();
         });
     }
 }
