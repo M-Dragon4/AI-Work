@@ -66,9 +66,9 @@ public class HeightMap {
             y += r.nextDouble();
 
             this.map.add(new Point(x, y, lerp(noise(x, y), (elevationMin + elevationMax) / 2, elevationMax), tileWidth, tileHeight));
-//            int elevation = (int) Math.floor(100 * ((map.get(t).getZ() - elevationMin) / (elevationMax - elevationMin)));
-//            elevation -= elevation % 5;
-//            System.out.println(map.get(t).getX() + "  " + map.get(t).getY() + "  " + map.get(t).getZ() + "  " + elevation);
+            int elevation = (int) Math.floor(100 * ((map.get(t).getZ() - elevationMin) / (elevationMax - elevationMin)));
+            elevation -= elevation % 5;
+            System.out.println(map.get(t).getX() + "  " + map.get(t).getY() + "  " + map.get(t).getZ() + "  " + elevation);
         }
     }
 

@@ -3,8 +3,9 @@ package projects.neldermead;
 import javax.swing.*;
 import java.awt.*;
 
-public class Canvas extends JPanel {
+public class Canvas extends JComponent {
     //Colors to represent at what percentage between the minimum and maximum elevation that the Point lies
+    //Rounded down to the closest least multiple of five
     private final Color ZERO = new Color(75, 128, 38);
     private final Color FIVE = new Color(103, 143, 54);
     private final Color TEN = new Color(141, 164, 68);
@@ -95,5 +96,9 @@ public class Canvas extends JPanel {
 
             g2d.fillRect(((int)Math.floor(p.getX())) * p.getTileWidth(), ((int)Math.floor(p.getY())) * p.getTileHeight(), p.getTileWidth(), p.getTileHeight());
         }
+    }
+
+    public void regenerate(int canvasWidth, int canvasHeight, int tileWidth, int tileHeight, double elevationMax, double elevationMin) {
+        this.map = new HeightMap(canvasWidth, canvasHeight, tileWidth, tileHeight, elevationMax, elevationMin);
     }
 }
