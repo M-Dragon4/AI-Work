@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * TODO: Fix lack of uniqueness across generations
+ * TODO: Fix lack of uniqueness across generations (is a different noise function required?)
  */
 public class HeightMap {
 

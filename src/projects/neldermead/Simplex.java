@@ -3,7 +3,7 @@ package projects.neldermead;
 import java.util.Random;
 
 public class Simplex {
-    private final Point INIT_H, INIT_S, INIT_L;
+
     private final HeightMap MAP = NelderMead.map;
     private final double ORIGIN_X = NelderMead.ORIGIN_X;
     private final double ORIGIN_Y = NelderMead.ORIGIN_Y;
@@ -13,6 +13,7 @@ public class Simplex {
     private final int RECONFIGURE_CODE = NelderMead.RECONFIGURE_CODE;
     private final int TILE_WIDTH = NelderMead.TILE_WIDTH;
     private final int TILE_HEIGHT = NelderMead.TILE_HEIGHT;
+    private final Point INIT_H, INIT_S, INIT_L;
     private Point h, s, l;
 
     /**
@@ -69,10 +70,10 @@ public class Simplex {
          */
         } else if (code == RECONFIGURE_CODE) {
             Random r = new Random();
-            double lx = HeightMap.lerp(r.nextDouble(), ORIGIN_X, map_width);
-            double ly = HeightMap.lerp(r.nextDouble(), ORIGIN_Y, map_height);
-            l.setX(Math.floor(lx));
-            l.setY(Math.floor(ly));
+            double l_x = HeightMap.lerp(r.nextDouble(), ORIGIN_X, map_width);
+            double l_y = HeightMap.lerp(r.nextDouble(), ORIGIN_Y, map_height);
+            l.setX(Math.floor(l_x));
+            l.setY(Math.floor(l_y));
             l.setZ(MAP.getPoint(((int)Math.floor(l.getX())) * l.getTileWidth(), ((int)Math.floor(l.getY())) * l.getTileHeight()).getZ());
             l.setTileWidth(TILE_WIDTH);
             l.setTileHeight(TILE_HEIGHT);
@@ -81,26 +82,26 @@ public class Simplex {
             h.setTileWidth(TILE_WIDTH);
             h.setTileHeight(TILE_HEIGHT);
 
-            if (lx > map_width / 2 && ly <= map_height / 2) { //Quadrant 1
-                s.setX(Math.floor(lx - map_width / 8));
-                s.setY(Math.floor(ly));
-                h.setX(Math.floor(lx));
-                h.setY(Math.floor(ly + map_height / 8));
-            } else if (lx <= map_width / 2 && ly <= map_height / 2) { //Quadrant 2
-                s.setX(Math.floor(lx + map_width / 8));
-                s.setY(Math.floor(ly));
-                h.setX(Math.floor(lx));
-                h.setY(Math.floor(ly + map_height / 8));
-            } else if (lx <= map_width / 2 && ly > map_height / 2) { //Quadrant 3
-                s.setX(Math.floor(lx + map_width / 8));
-                s.setY(Math.floor(ly));
-                h.setX(Math.floor(lx));
-                h.setY(Math.floor(ly - map_height / 8));
-            } else if (lx > map_width / 2 && ly > map_height / 2) { //Quadrant 4
-                s.setX(Math.floor(lx - map_width / 8));
-                s.setY(Math.floor(ly));
-                h.setX(Math.floor(lx));
-                h.setY(Math.floor(ly - map_height / 8));
+            if (l_x > map_width / 2 && l_y <= map_height / 2) { //Quadrant 1
+                s.setX(Math.floor(l_x - map_width / 8));
+                s.setY(Math.floor(l_y));
+                h.setX(Math.floor(l_x));
+                h.setY(Math.floor(l_y + map_height / 8));
+            } else if (l_x <= map_width / 2 && l_y <= map_height / 2) { //Quadrant 2
+                s.setX(Math.floor(l_x + map_width / 8));
+                s.setY(Math.floor(l_y));
+                h.setX(Math.floor(l_x));
+                h.setY(Math.floor(l_y + map_height / 8));
+            } else if (l_x <= map_width / 2 && l_y > map_height / 2) { //Quadrant 3
+                s.setX(Math.floor(l_x + map_width / 8));
+                s.setY(Math.floor(l_y));
+                h.setX(Math.floor(l_x));
+                h.setY(Math.floor(l_y - map_height / 8));
+            } else if (l_x > map_width / 2 && l_y > map_height / 2) { //Quadrant 4
+                s.setX(Math.floor(l_x - map_width / 8));
+                s.setY(Math.floor(l_y));
+                h.setX(Math.floor(l_x));
+                h.setY(Math.floor(l_y - map_height / 8));
             }
 
             s.setZ(MAP.getPoint(((int)Math.floor(s.getX())) * s.getTileWidth(), ((int)Math.floor(s.getY())) * s.getTileHeight()).getZ());

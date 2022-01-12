@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Canvas extends JPanel {
+
     //Colors to represent at what percentage between the minimum and maximum elevation that the Point lies
     //Rounded down to the closest least multiple of five
     private final Color ZERO = new Color(75, 128, 38);
