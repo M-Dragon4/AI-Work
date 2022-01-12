@@ -8,7 +8,7 @@ import java.util.Random;
  */
 public class HeightMap {
 
-    private final double STRETCH_FACTOR = 13.0;
+    private final double STRETCH_FACTOR = 28.0;
     private ArrayList<Point> map = new ArrayList<>();
     private double elevationMax, elevationMin;
 
@@ -27,12 +27,19 @@ public class HeightMap {
             138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180
     };
 
+    /**
+     * Empty Constructor
+     */
     public HeightMap() {
         this.map = null;
         this.elevationMax = 0.0;
         this.elevationMin = 0.0;
     }
 
+    /**
+     * Full Constructor
+     * @param map the Height Map to draw to the Canvas
+     */
     public HeightMap(HeightMap map) {
         this.map = map.getPoints();
         this.elevationMax = map.getElevationMax();
@@ -103,7 +110,7 @@ public class HeightMap {
         return t * t * t * (t * (t * 6 - 15) + 10);
     }
 
-    private double lerp(double t, double a, double b) {
+    public static double lerp(double t, double a, double b) {
         return a + t * (b - a);
     }
 
@@ -141,6 +148,15 @@ public class HeightMap {
 
     public ArrayList<Point> getPoints() {
         return map;
+    }
+
+    public Point getPoint(int x, int y) {
+        for (Point p : map) {
+            if ((((int)Math.floor(p.getX())) * p.getTileWidth() == x) && (((int)Math.floor(p.getY())) * p.getTileHeight() == y)) {
+                return p;
+            }
+        }
+        return new Point();
     }
 
     public double getElevationMax() {

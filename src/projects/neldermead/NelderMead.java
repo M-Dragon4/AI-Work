@@ -6,18 +6,24 @@ import java.awt.*;
 /**
  * This is a visual implementation of the Nelder Mead Algorithm for 2D. The objective of this implementation is to find
  * the highest region on a randomly generated surface (visualized as a topology map)
- * TODO: Implement Nelder Mead; Add button functions
+ * TODO: Implement Nelder Mead
  */
 public class NelderMead implements Runnable {
     public static final int ORIGIN_X = 0;
     public static final int ORIGIN_Y = 0;
-    public final int CANVAS_WIDTH = 640;
-    public final int CANVAS_HEIGHT = 480;
+    public static final int RESET_CODE = 0;
+    public static final int RECONFIGURE_CODE = 1;
+    public static final int CANVAS_WIDTH = 640;
+    public static final int CANVAS_HEIGHT = 480;
+    public static final int TILE_WIDTH = 8;
+    public static final int TILE_HEIGHT = 8;
     public final int BUTTON_WIDTH = CANVAS_WIDTH;
     public final int BUTTON_HEIGHT = CANVAS_HEIGHT / 12;
     public final Dimension CANVAS_SIZE = new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT);
     public final Dimension BUTTON_SIZE = new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT);
-    public Canvas canvas;
+    public static Canvas canvas;
+    public static HeightMap map;
+    public static Simplex simplex;
     public JFrame frame;
     public JPanel container;
     public JPanel buttonPanel;
@@ -26,8 +32,6 @@ public class NelderMead implements Runnable {
     public JButton reconfigureButton;
     public JButton regenerateButton;
 
-    private final int TILE_WIDTH = 16;
-    private final int TILE_HEIGHT = 16;
     private final int WAIT = 100; //In milliseconds
     private final double ELEVATION_MAX = 100.0;
     private final double ELEVATION_MIN = 0.0;
@@ -41,11 +45,11 @@ public class NelderMead implements Runnable {
         solveButton = new JButton("Solve");
         solveButton.setToolTipText("Solves the given Height Map using the Nelder Mead algorithm.");
         resetButton = new JButton("Reset");
-        resetButton.setToolTipText("Resets the simplex to its initial position.");
+        resetButton.setToolTipText("Resets the Simplex to its initial position.");
         reconfigureButton = new JButton("Reconfigure");
-        reconfigureButton.setToolTipText("Reconfigures the simplex's initial position.");
+        reconfigureButton.setToolTipText("Reconfigures the Simplex's initial position.");
         regenerateButton = new JButton("Regenerate");
-        regenerateButton.setToolTipText("Generates a new Height Map and a new simplex.");
+        regenerateButton.setToolTipText("Generates a new Height Map and reconfigures the Simplex's initial position.");
 
         buttonPanel = new JPanel();
         buttonPanel.setBackground(Color.WHITE);
@@ -55,7 +59,10 @@ public class NelderMead implements Runnable {
         buttonPanel.add(reconfigureButton);
         buttonPanel.add(regenerateButton);
 
-        canvas = new Canvas(new HeightMap(CANVAS_WIDTH, CANVAS_HEIGHT, TILE_WIDTH, TILE_HEIGHT, ELEVATION_MAX, ELEVATION_MIN));
+        map = new HeightMap(CANVAS_WIDTH, CANVAS_HEIGHT, TILE_WIDTH, TILE_HEIGHT, ELEVATION_MAX, ELEVATION_MIN);
+        simplex = new Simplex();
+        simplex.initialize(RECONFIGURE_CODE);
+        canvas = new Canvas(map, simplex);
         canvas.setPreferredSize(CANVAS_SIZE);
 
         container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
@@ -72,9 +79,32 @@ public class NelderMead implements Runnable {
     public void run() {
         init();
 
+        solveButton.addActionListener(actionEvent -> {
+            buttonThread = new Thread(() -> {
+                running = true;
+                try {
+                    while (running) {
+                        //Nelder Mead
+                        Thread.sleep(WAIT);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+            buttonThread.start();
+        });
+        resetButton.addActionListener(actionEvent -> {
+            running = false;
+            canvas.reset();
+        });
+        reconfigureButton.addActionListener(actionEvent -> {
+            running = false;
+            canvas.reconfigure();
+        });
         regenerateButton.addActionListener(event -> {
             running = false;
-            canvas.regenerate(CANVAS_WIDTH, CANVAS_HEIGHT, TILE_WIDTH, TILE_HEIGHT, ELEVATION_MAX, ELEVATION_MIN);
+            map = new HeightMap(CANVAS_WIDTH, CANVAS_HEIGHT, TILE_WIDTH, TILE_HEIGHT, ELEVATION_MAX, ELEVATION_MIN);
+            canvas.regenerate(map);
         });
     }
 }

@@ -3,7 +3,7 @@ package projects.neldermead;
 import javax.swing.*;
 import java.awt.*;
 
-public class Canvas extends JComponent {
+public class Canvas extends JPanel {
     //Colors to represent at what percentage between the minimum and maximum elevation that the Point lies
     //Rounded down to the closest least multiple of five
     private final Color ZERO = new Color(75, 128, 38);
@@ -28,14 +28,25 @@ public class Canvas extends JComponent {
     private final Color NINETYFIVE = new Color(177, 102, 71);
     private final Color HUNDRED = new Color(161, 89, 67);
 
-    private HeightMap map = new HeightMap();
+    private final int RESET_CODE = NelderMead.RESET_CODE;
+    private final int RECONFIGURE_CODE = NelderMead.RECONFIGURE_CODE;
+    private HeightMap map;
+    private Simplex simplex;
 
     public Canvas() {
+        this.map = new HeightMap();
+        this.simplex = new Simplex();
         this.setBackground(Color.WHITE);
     }
 
-    public Canvas(HeightMap map) {
+    /**
+     * Full Constructor
+     * @param map the Height Map to be drawn
+     * @param simplex the Simplex to be drawn
+     */
+    public Canvas(HeightMap map, Simplex simplex) {
         this.map = map;
+        this.simplex = simplex;
     }
 
     @Override
@@ -96,10 +107,55 @@ public class Canvas extends JComponent {
 
             g2d.fillRect(((int)Math.floor(p.getX())) * p.getTileWidth(), ((int)Math.floor(p.getY())) * p.getTileHeight(), p.getTileWidth(), p.getTileHeight());
         }
+        g2d.setColor(Color.BLACK);
+        g2d.setStroke(new BasicStroke(2));
+        g2d.drawLine((int)simplex.getH().getX() * simplex.getH().getTileWidth(), (int)simplex.getH().getY() * simplex.getH().getTileHeight(),
+                (int)simplex.getS().getX() * simplex.getS().getTileWidth(), (int)simplex.getS().getY() * simplex.getS().getTileHeight());
+        g2d.drawLine((int)simplex.getS().getX() * simplex.getS().getTileWidth(), (int)simplex.getS().getY() * simplex.getS().getTileHeight(),
+                (int)simplex.getL().getX() * simplex.getL().getTileWidth(), (int)simplex.getL().getY() * simplex.getL().getTileHeight());
+        g2d.drawLine((int)simplex.getL().getX() * simplex.getL().getTileWidth(), (int)simplex.getL().getY() * simplex.getL().getTileHeight(),
+                (int)simplex.getH().getX() * simplex.getH().getTileWidth(), (int)simplex.getH().getY() * simplex.getH().getTileHeight());
     }
 
-    public void regenerate(int canvasWidth, int canvasHeight, int tileWidth, int tileHeight, double elevationMax, double elevationMin) {
-        this.map = new HeightMap(canvasWidth, canvasHeight, tileWidth, tileHeight, elevationMax, elevationMin);
+    /**
+     * Resets the Simplex to the initial position of this iteration
+     */
+    public void reset() {
+        this.simplex.initialize(RESET_CODE);
         this.repaint();
+    }
+
+    /**
+     * Reconfigures the Simplex's initial position to new coordinates
+     */
+    public void reconfigure() {
+        this.simplex.initialize(RECONFIGURE_CODE);
+        this.repaint();
+    }
+
+    /**
+     * Regenerates the Height Map and draws a new Simplex onto it
+     * @param map the new Height Map
+     */
+    public void regenerate(HeightMap map) {
+        this.map = map;
+        this.simplex.initialize(RECONFIGURE_CODE);
+        this.repaint();
+    }
+
+    public HeightMap getHeightMap() {
+        return map;
+    }
+
+    public void setHeightMap(HeightMap map) {
+        this.map = map;
+    }
+
+    public Simplex getSimplex() {
+        return simplex;
+    }
+
+    public void setSimplex(Simplex simplex) {
+        this.simplex = simplex;
     }
 }
