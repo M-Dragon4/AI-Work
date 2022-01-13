@@ -70,10 +70,10 @@ public class Simplex {
          */
         } else if (code == RECONFIGURE_CODE) {
             Random r = new Random();
-            double l_x = HeightMap.lerp(r.nextDouble(), ORIGIN_X, map_width);
-            double l_y = HeightMap.lerp(r.nextDouble(), ORIGIN_Y, map_height);
-            one.setX(Math.floor(l_x));
-            one.setY(Math.floor(l_y));
+            double one_x = HeightMap.lerp(r.nextDouble(), ORIGIN_X, map_width);
+            double one_y = HeightMap.lerp(r.nextDouble(), ORIGIN_Y, map_height);
+            one.setX(Math.floor(one_x));
+            one.setY(Math.floor(one_y));
             one.setZ(MAP.getPoint(((int)Math.floor(one.getX())) * one.getTileWidth(), ((int)Math.floor(one.getY())) * one.getTileHeight()).getZ());
             one.setTileWidth(TILE_WIDTH);
             one.setTileHeight(TILE_HEIGHT);
@@ -82,26 +82,26 @@ public class Simplex {
             three.setTileWidth(TILE_WIDTH);
             three.setTileHeight(TILE_HEIGHT);
 
-            if (l_x > map_width / 2 && l_y <= map_height / 2) { //Quadrant 1
-                two.setX(Math.floor(l_x - map_width / 8));
-                two.setY(Math.floor(l_y));
-                three.setX(Math.floor(l_x));
-                three.setY(Math.floor(l_y + map_height / 8));
-            } else if (l_x <= map_width / 2 && l_y <= map_height / 2) { //Quadrant 2
-                two.setX(Math.floor(l_x + map_width / 8));
-                two.setY(Math.floor(l_y));
-                three.setX(Math.floor(l_x));
-                three.setY(Math.floor(l_y + map_height / 8));
-            } else if (l_x <= map_width / 2 && l_y > map_height / 2) { //Quadrant 3
-                two.setX(Math.floor(l_x + map_width / 8));
-                two.setY(Math.floor(l_y));
-                three.setX(Math.floor(l_x));
-                three.setY(Math.floor(l_y - map_height / 8));
-            } else if (l_x > map_width / 2 && l_y > map_height / 2) { //Quadrant 4
-                two.setX(Math.floor(l_x - map_width / 8));
-                two.setY(Math.floor(l_y));
-                three.setX(Math.floor(l_x));
-                three.setY(Math.floor(l_y - map_height / 8));
+            if (one_x > map_width / 2 && one_y <= map_height / 2) { //Quadrant 1
+                two.setX(Math.floor(one_x - map_width / 8));
+                two.setY(Math.floor(one_y));
+                three.setX(Math.floor(one_x));
+                three.setY(Math.floor(one_y + map_height / 8));
+            } else if (one_x <= map_width / 2 && one_y <= map_height / 2) { //Quadrant 2
+                two.setX(Math.floor(one_x + map_width / 8));
+                two.setY(Math.floor(one_y));
+                three.setX(Math.floor(one_x));
+                three.setY(Math.floor(one_y + map_height / 8));
+            } else if (one_x <= map_width / 2 && one_y > map_height / 2) { //Quadrant 3
+                two.setX(Math.floor(one_x + map_width / 8));
+                two.setY(Math.floor(one_y));
+                three.setX(Math.floor(one_x));
+                three.setY(Math.floor(one_y - map_height / 8));
+            } else if (one_x > map_width / 2 && one_y > map_height / 2) { //Quadrant 4
+                two.setX(Math.floor(one_x - map_width / 8));
+                two.setY(Math.floor(one_y));
+                three.setX(Math.floor(one_x));
+                three.setY(Math.floor(one_y - map_height / 8));
             }
 
             two.setZ(MAP.getPoint(((int)Math.floor(two.getX())) * two.getTileWidth(), ((int)Math.floor(two.getY())) * two.getTileHeight()).getZ());
