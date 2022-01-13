@@ -64,9 +64,9 @@ public class Simplex {
             three.setTileHeight(TILE_HEIGHT);
         /*
         Sends the Simplex to new coordinates.
-        Vertex l is randomly generated new coordinates
-        Vertex s always has the same y-coordinate as l, but its x-coordinate is closer to the middle of the canvas than l's x-coordinate by 1/8 of the map's width
-        Vertex h always has the same x-coordinate as l, but its y-coordinate is closer to the middle of the canvas than l's y-coordinate by 1/8 of the map's height
+        Vertex one is randomly generated new coordinates
+        Vertex two always has the same y-coordinate as one, but its x-coordinate is closer to the middle of the canvas than one's x-coordinate by 1/8 of the map's width
+        Vertex three always has the same x-coordinate as one, but its y-coordinate is closer to the middle of the canvas than one's y-coordinate by 1/8 of the map's height
          */
         } else if (code == RECONFIGURE_CODE) {
             Random r = new Random();
