@@ -21,8 +21,8 @@ public class Point {
      * @param x the x-coordinate of the Point
      * @param y the y-coordinate of the Point
      * @param z the z-coordinate of the Point
-     * @param tileWidth the width of the Point
-     * @param tileHeight the height of the Point
+     * @param tileWidth the width of the Point on the Canvas
+     * @param tileHeight the height of the Point on the Canvas
      */
     public Point(double x, double y, double z, int tileWidth, int tileHeight) {
        this.x = x;

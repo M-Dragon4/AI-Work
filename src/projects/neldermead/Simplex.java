@@ -13,34 +13,34 @@ public class Simplex {
     private final int RECONFIGURE_CODE = NelderMead.RECONFIGURE_CODE;
     private final int TILE_WIDTH = NelderMead.TILE_WIDTH;
     private final int TILE_HEIGHT = NelderMead.TILE_HEIGHT;
-    private final Point INIT_H, INIT_S, INIT_L;
-    private Point h, s, l;
+    private final Point INIT_ONE, INIT_TWO, INIT_THREE;
+    private Point one, two, three;
 
     /**
      * Empty Constructor
      */
     public Simplex() {
-        this.h = new Point();
-        this.s = new Point();
-        this.l = new Point();
-        this.INIT_H = h;
-        this.INIT_S = s;
-        this.INIT_L = l;
+        this.one = new Point();
+        this.two = new Point();
+        this.three = new Point();
+        this.INIT_ONE = one;
+        this.INIT_TWO = two;
+        this.INIT_THREE = three;
     }
 
     /**
      * Full Constructor
-     * @param h a vertex of the Simplex
-     * @param s a vertex of the Simplex
-     * @param l a vertex of the Simplex (used as the initial guess)
+     * @param one a vertex of the Simplex
+     * @param two a vertex of the Simplex
+     * @param three a vertex of the Simplex
      */
-    public Simplex(Point h, Point s, Point l) {
-        this.h = h;
-        this.s = s;
-        this.l = l;
-        this.INIT_H = h;
-        this.INIT_S = s;
-        this.INIT_L = l;
+    public Simplex(Point one, Point two, Point three) {
+        this.one = one;
+        this.two = two;
+        this.three = three;
+        this.INIT_ONE = one;
+        this.INIT_TWO = two;
+        this.INIT_THREE = three;
     }
 
     /**
@@ -53,15 +53,15 @@ public class Simplex {
         double map_height = CANVAS_HEIGHT / TILE_HEIGHT;
         //Sends the Simplex to its original coordinates
         if (code == RESET_CODE) {
-            h = INIT_H;
-            h.setTileWidth(TILE_WIDTH);
-            h.setTileHeight(TILE_HEIGHT);
-            s = INIT_S;
-            s.setTileWidth(TILE_WIDTH);
-            s.setTileHeight(TILE_HEIGHT);
-            l = INIT_L;
-            l.setTileWidth(TILE_WIDTH);
-            l.setTileHeight(TILE_HEIGHT);
+            one = INIT_ONE;
+            one.setTileWidth(TILE_WIDTH);
+            one.setTileHeight(TILE_HEIGHT);
+            two = INIT_TWO;
+            two.setTileWidth(TILE_WIDTH);
+            two.setTileHeight(TILE_HEIGHT);
+            three = INIT_THREE;
+            three.setTileWidth(TILE_WIDTH);
+            three.setTileHeight(TILE_HEIGHT);
         /*
         Sends the Simplex to new coordinates.
         Vertex l is randomly generated new coordinates
@@ -72,64 +72,64 @@ public class Simplex {
             Random r = new Random();
             double l_x = HeightMap.lerp(r.nextDouble(), ORIGIN_X, map_width);
             double l_y = HeightMap.lerp(r.nextDouble(), ORIGIN_Y, map_height);
-            l.setX(Math.floor(l_x));
-            l.setY(Math.floor(l_y));
-            l.setZ(MAP.getPoint(((int)Math.floor(l.getX())) * l.getTileWidth(), ((int)Math.floor(l.getY())) * l.getTileHeight()).getZ());
-            l.setTileWidth(TILE_WIDTH);
-            l.setTileHeight(TILE_HEIGHT);
-            s.setTileWidth(TILE_WIDTH);
-            s.setTileHeight(TILE_HEIGHT);
-            h.setTileWidth(TILE_WIDTH);
-            h.setTileHeight(TILE_HEIGHT);
+            one.setX(Math.floor(l_x));
+            one.setY(Math.floor(l_y));
+            one.setZ(MAP.getPoint(((int)Math.floor(one.getX())) * one.getTileWidth(), ((int)Math.floor(one.getY())) * one.getTileHeight()).getZ());
+            one.setTileWidth(TILE_WIDTH);
+            one.setTileHeight(TILE_HEIGHT);
+            two.setTileWidth(TILE_WIDTH);
+            two.setTileHeight(TILE_HEIGHT);
+            three.setTileWidth(TILE_WIDTH);
+            three.setTileHeight(TILE_HEIGHT);
 
             if (l_x > map_width / 2 && l_y <= map_height / 2) { //Quadrant 1
-                s.setX(Math.floor(l_x - map_width / 8));
-                s.setY(Math.floor(l_y));
-                h.setX(Math.floor(l_x));
-                h.setY(Math.floor(l_y + map_height / 8));
+                two.setX(Math.floor(l_x - map_width / 8));
+                two.setY(Math.floor(l_y));
+                three.setX(Math.floor(l_x));
+                three.setY(Math.floor(l_y + map_height / 8));
             } else if (l_x <= map_width / 2 && l_y <= map_height / 2) { //Quadrant 2
-                s.setX(Math.floor(l_x + map_width / 8));
-                s.setY(Math.floor(l_y));
-                h.setX(Math.floor(l_x));
-                h.setY(Math.floor(l_y + map_height / 8));
+                two.setX(Math.floor(l_x + map_width / 8));
+                two.setY(Math.floor(l_y));
+                three.setX(Math.floor(l_x));
+                three.setY(Math.floor(l_y + map_height / 8));
             } else if (l_x <= map_width / 2 && l_y > map_height / 2) { //Quadrant 3
-                s.setX(Math.floor(l_x + map_width / 8));
-                s.setY(Math.floor(l_y));
-                h.setX(Math.floor(l_x));
-                h.setY(Math.floor(l_y - map_height / 8));
+                two.setX(Math.floor(l_x + map_width / 8));
+                two.setY(Math.floor(l_y));
+                three.setX(Math.floor(l_x));
+                three.setY(Math.floor(l_y - map_height / 8));
             } else if (l_x > map_width / 2 && l_y > map_height / 2) { //Quadrant 4
-                s.setX(Math.floor(l_x - map_width / 8));
-                s.setY(Math.floor(l_y));
-                h.setX(Math.floor(l_x));
-                h.setY(Math.floor(l_y - map_height / 8));
+                two.setX(Math.floor(l_x - map_width / 8));
+                two.setY(Math.floor(l_y));
+                three.setX(Math.floor(l_x));
+                three.setY(Math.floor(l_y - map_height / 8));
             }
 
-            s.setZ(MAP.getPoint(((int)Math.floor(s.getX())) * s.getTileWidth(), ((int)Math.floor(s.getY())) * s.getTileHeight()).getZ());
-            h.setZ(MAP.getPoint(((int)Math.floor(h.getX())) * h.getTileWidth(), ((int)Math.floor(h.getY())) * h.getTileHeight()).getZ());
+            two.setZ(MAP.getPoint(((int)Math.floor(two.getX())) * two.getTileWidth(), ((int)Math.floor(two.getY())) * two.getTileHeight()).getZ());
+            three.setZ(MAP.getPoint(((int)Math.floor(three.getX())) * three.getTileWidth(), ((int)Math.floor(three.getY())) * three.getTileHeight()).getZ());
         }
     }
 
-    public Point getH() {
-        return h;
+    public Point getOne() {
+        return one;
     }
 
-    public void setH(Point p) {
-        this.h = p;
+    public void setOne(Point p) {
+        this.one = p;
     }
 
-    public Point getS() {
-        return s;
+    public Point getTwo() {
+        return two;
     }
 
-    public void setS(Point p) {
-        this.s = p;
+    public void setTwo(Point p) {
+        this.two = p;
     }
 
-    public Point getL() {
-        return l;
+    public Point getThree() {
+        return three;
     }
 
-    public void setL(Point p) {
-        this.l = p;
+    public void setThree(Point p) {
+        this.three = p;
     }
 }
