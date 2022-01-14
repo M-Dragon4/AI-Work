@@ -106,16 +106,16 @@ public class Canvas extends JPanel {
                     break;
             }
 
-            g2d.fillRect(((int)Math.floor(p.getX())) * p.getTileWidth(), ((int)Math.floor(p.getY())) * p.getTileHeight(), p.getTileWidth(), p.getTileHeight());
+            g2d.fillRect(((int)Math.floor(p.getX())) * p.getTileSize(), ((int)Math.floor(p.getY())) * p.getTileSize(), p.getTileSize(), p.getTileSize());
         }
         g2d.setColor(Color.BLACK);
         g2d.setStroke(new BasicStroke(2));
-        g2d.drawLine((int)simplex.getThree().getX() * simplex.getThree().getTileWidth(), (int)simplex.getThree().getY() * simplex.getThree().getTileHeight(),
-                (int)simplex.getTwo().getX() * simplex.getTwo().getTileWidth(), (int)simplex.getTwo().getY() * simplex.getTwo().getTileHeight());
-        g2d.drawLine((int)simplex.getTwo().getX() * simplex.getTwo().getTileWidth(), (int)simplex.getTwo().getY() * simplex.getTwo().getTileHeight(),
-                (int)simplex.getOne().getX() * simplex.getOne().getTileWidth(), (int)simplex.getOne().getY() * simplex.getOne().getTileHeight());
-        g2d.drawLine((int)simplex.getOne().getX() * simplex.getOne().getTileWidth(), (int)simplex.getOne().getY() * simplex.getOne().getTileHeight(),
-                (int)simplex.getThree().getX() * simplex.getThree().getTileWidth(), (int)simplex.getThree().getY() * simplex.getThree().getTileHeight());
+        g2d.drawLine((int)simplex.getThree().getX() * simplex.getThree().getTileSize(), (int)simplex.getThree().getY() * simplex.getThree().getTileSize(),
+                (int)simplex.getTwo().getX() * simplex.getTwo().getTileSize(), (int)simplex.getTwo().getY() * simplex.getTwo().getTileSize());
+        g2d.drawLine((int)simplex.getTwo().getX() * simplex.getTwo().getTileSize(), (int)simplex.getTwo().getY() * simplex.getTwo().getTileSize(),
+                (int)simplex.getOne().getX() * simplex.getOne().getTileSize(), (int)simplex.getOne().getY() * simplex.getOne().getTileSize());
+        g2d.drawLine((int)simplex.getOne().getX() * simplex.getOne().getTileSize(), (int)simplex.getOne().getY() * simplex.getOne().getTileSize(),
+                (int)simplex.getThree().getX() * simplex.getThree().getTileSize(), (int)simplex.getThree().getY() * simplex.getThree().getTileSize());
     }
 
     /**

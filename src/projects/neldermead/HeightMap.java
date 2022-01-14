@@ -1,6 +1,5 @@
 package projects.neldermead;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -50,12 +49,11 @@ public class HeightMap {
      * Generates a Height Map that is, along an imaginary z-axis, centered around the median elevation, given the following parameters:
      * @param canvasWidth the width [x] of the canvas
      * @param canvasHeight the height [y] of the canvas
-     * @param tileWidth the width [x] of each tile, or Point
-     * @param tileHeight the height [y] of each tile, or Point
+     * @param tileSize the height and width of each tile, or Point
      * @param elevationMax the maximum elevation [z] of the map
      * @param elevationMin the minimum elevation [z] of the map
      */
-    public HeightMap(int canvasWidth, int canvasHeight, int tileWidth, int tileHeight, double elevationMax, double elevationMin) {
+    public HeightMap(int canvasWidth, int canvasHeight, int tileSize, double elevationMax, double elevationMin) {
         this.elevationMax = elevationMax;
         this.elevationMin = elevationMin;
 
@@ -63,8 +61,8 @@ public class HeightMap {
             P[256+i] = P[i] = PERMUTATION[i];
         }
 
-        int numTilesX = canvasWidth / tileWidth;
-        int numTilesY = canvasHeight / tileHeight;
+        int numTilesX = canvasWidth / tileSize;
+        int numTilesY = canvasHeight / tileSize;
 
         this.map = new Point[numTilesX * numTilesY];
 
@@ -75,7 +73,7 @@ public class HeightMap {
             x += r.nextDouble();
             y += r.nextDouble();
 
-            this.map[t] = new Point(new double[]{x, y, lerp(noise(x, y, STRETCH_FACTOR), (elevationMin + elevationMax) / 2, elevationMax)}, tileWidth, tileHeight);
+            this.map[t] = new Point(new double[]{x, y, lerp(noise(x, y, STRETCH_FACTOR), (elevationMin + elevationMax) / 2, elevationMax)}, tileSize);
         }
     }
 
@@ -152,7 +150,7 @@ public class HeightMap {
 
     public Point getPoint(int x, int y) {
         for (Point p : map) {
-            if ((((int)Math.floor(p.getX())) * p.getTileWidth() == x) && (((int)Math.floor(p.getY())) * p.getTileHeight() == y)) {
+            if ((((int)Math.floor(p.getX())) * p.getTileSize() == x) && (((int)Math.floor(p.getY())) * p.getTileSize() == y)) {
                 return p;
             }
         }

@@ -11,8 +11,7 @@ public class Simplex {
     private final double CANVAS_HEIGHT = NelderMead.CANVAS_HEIGHT;
     private final int RESET_CODE = NelderMead.RESET_CODE;
     private final int RECONFIGURE_CODE = NelderMead.RECONFIGURE_CODE;
-    private final int TILE_WIDTH = NelderMead.TILE_WIDTH;
-    private final int TILE_HEIGHT = NelderMead.TILE_HEIGHT;
+    private final int TILE_SIZE = NelderMead.TILE_SIZE;
     private Point one, two, three, initOne, initTwo, initThree;
 
     /**
@@ -48,20 +47,17 @@ public class Simplex {
      * @param code the integer to determine the context
      */
     public void initialize(int code) {
-        double map_width = CANVAS_WIDTH / TILE_WIDTH;
-        double map_height = CANVAS_HEIGHT / TILE_HEIGHT;
+        double map_width = CANVAS_WIDTH / TILE_SIZE;
+        double map_height = CANVAS_HEIGHT / TILE_SIZE;
         switch(code) {
             //Sends the Simplex to its original coordinates
             case RESET_CODE: {
                 one = initOne;
-                one.setTileWidth(TILE_WIDTH);
-                one.setTileHeight(TILE_HEIGHT);
+                one.setTileSize(TILE_SIZE);
                 two = initTwo;
-                two.setTileWidth(TILE_WIDTH);
-                two.setTileHeight(TILE_HEIGHT);
+                two.setTileSize(TILE_SIZE);
                 three = initThree;
-                three.setTileWidth(TILE_WIDTH);
-                three.setTileHeight(TILE_HEIGHT);
+                three.setTileSize(TILE_SIZE);
             } break;
             /*
             Sends the Simplex to new coordinates.
@@ -75,13 +71,10 @@ public class Simplex {
                 double one_y = HeightMap.lerp(r.nextDouble(), ORIGIN_Y, map_height);
                 one.setX(Math.floor(one_x));
                 one.setY(Math.floor(one_y));
-                one.setZ(MAP.getPoint(((int)Math.floor(one.getX())) * one.getTileWidth(), ((int)Math.floor(one.getY())) * one.getTileHeight()).getZ());
-                one.setTileWidth(TILE_WIDTH);
-                one.setTileHeight(TILE_HEIGHT);
-                two.setTileWidth(TILE_WIDTH);
-                two.setTileHeight(TILE_HEIGHT);
-                three.setTileWidth(TILE_WIDTH);
-                three.setTileHeight(TILE_HEIGHT);
+                one.setZ(MAP.getPoint(((int)Math.floor(one.getX())) * one.getTileSize(), ((int)Math.floor(one.getY())) * one.getTileSize()).getZ());
+                one.setTileSize(TILE_SIZE);
+                two.setTileSize(TILE_SIZE);
+                three.setTileSize(TILE_SIZE);
 
                 if (one_x > map_width / 2 && one_y <= map_height / 2) { //Quadrant 1
                     two.setX(Math.floor(one_x - map_width / 8));
@@ -105,8 +98,8 @@ public class Simplex {
                     three.setY(Math.floor(one_y - map_height / 8));
                 }
 
-                two.setZ(MAP.getPoint(((int)Math.floor(two.getX())) * two.getTileWidth(), ((int)Math.floor(two.getY())) * two.getTileHeight()).getZ());
-                three.setZ(MAP.getPoint(((int)Math.floor(three.getX())) * three.getTileWidth(), ((int)Math.floor(three.getY())) * three.getTileHeight()).getZ());
+                two.setZ(MAP.getPoint(((int)Math.floor(two.getX())) * two.getTileSize(), ((int)Math.floor(two.getY())) * two.getTileSize()).getZ());
+                three.setZ(MAP.getPoint(((int)Math.floor(three.getX())) * three.getTileSize(), ((int)Math.floor(three.getY())) * three.getTileSize()).getZ());
 
                 initOne = one;
                 initTwo = two;

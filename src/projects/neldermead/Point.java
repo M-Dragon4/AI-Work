@@ -3,7 +3,7 @@ package projects.neldermead;
 public class Point {
 
     private double[] coordinates = new double[3];
-    private int tileWidth, tileHeight;
+    private int tileSize;
 
     /**
      * Empty Constructor
@@ -12,20 +12,17 @@ public class Point {
         for (int i = 0; i < coordinates.length; i++) {
             this.coordinates[i] = 0.0;
         }
-        this.tileWidth = 0;
-        this.tileHeight = 0;
+        this.tileSize = 0;
     }
 
     /**
      * Full Constructor
      * @param coordinates the coordinates of the Point within the Canvas
-     * @param tileWidth the width of the Point on the Canvas
-     * @param tileHeight the height of the Point on the Canvas
+     * @param tileSize the height and width of the Point on the Canvas
      */
-    public Point(double[] coordinates, int tileWidth, int tileHeight) {
+    public Point(double[] coordinates, int tileSize) {
        this.coordinates = coordinates;
-       this.tileWidth = tileWidth;
-       this.tileHeight = tileHeight;
+       this.tileSize = tileSize;
     }
 
     public double getX() {
@@ -60,19 +57,11 @@ public class Point {
         this.coordinates = coordinates;
     }
 
-    public int getTileWidth() {
-        return tileWidth;
+    public int getTileSize() {
+        return tileSize;
     }
 
-    public void setTileWidth(int tileWidth) {
-        this.tileWidth = tileWidth;
-    }
-
-    public int getTileHeight() {
-        return tileHeight;
-    }
-
-    public void setTileHeight(int tileHeight) {
-        this.tileHeight = tileHeight;
+    public void setTileSize(int tileSize) {
+        this.tileSize = tileSize;
     }
 }
