@@ -2,58 +2,62 @@ package projects.neldermead;
 
 public class Point {
 
-    private double x, y, z;
+    private double[] coordinates = new double[3];
     private int tileWidth, tileHeight;
 
     /**
      * Empty Constructor
      */
     public Point() {
-        this.x = 0.0;
-        this.y = 0.0;
-        this.z = 0.0;
+        for (int i = 0; i < coordinates.length; i++) {
+            this.coordinates[i] = 0.0;
+        }
         this.tileWidth = 0;
         this.tileHeight = 0;
     }
 
     /**
      * Full Constructor
-     * @param x the x-coordinate of the Point
-     * @param y the y-coordinate of the Point
-     * @param z the z-coordinate of the Point
+     * @param coordinates the coordinates of the Point within the Canvas
      * @param tileWidth the width of the Point on the Canvas
      * @param tileHeight the height of the Point on the Canvas
      */
-    public Point(double x, double y, double z, int tileWidth, int tileHeight) {
-       this.x = x;
-       this.y = y;
-       this.z = z;
+    public Point(double[] coordinates, int tileWidth, int tileHeight) {
+       this.coordinates = coordinates;
        this.tileWidth = tileWidth;
        this.tileHeight = tileHeight;
     }
 
     public double getX() {
-        return x;
+        return coordinates[0];
     }
 
     public void setX(double x) {
-        this.x = x;
+        this.coordinates[0] = x;
     }
 
     public double getY() {
-        return y;
+        return coordinates[1];
     }
 
     public void setY(double y) {
-        this.y = y;
+        this.coordinates[1] = y;
     }
 
     public double getZ() {
-        return z;
+        return coordinates[2];
     }
 
     public void setZ(double z) {
-        this.z = z;
+        this.coordinates[2] = z;
+    }
+
+    public double[] getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(double[] coordinates) {
+        this.coordinates = coordinates;
     }
 
     public int getTileWidth() {

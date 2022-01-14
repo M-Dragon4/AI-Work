@@ -9,7 +9,7 @@ import java.util.Random;
 public class HeightMap {
 
     private final double STRETCH_FACTOR = 28.0;
-    private ArrayList<Point> map = new ArrayList<>();
+    private Point[] map;
     private double elevationMax, elevationMin;
 
     private final int[] P = new int[512], PERMUTATION = { 151,160,137,91,90,15,
@@ -48,14 +48,14 @@ public class HeightMap {
 
     /**
      * Generates a Height Map that is, along an imaginary z-axis, centered around the median elevation, given the following parameters:
-     * @param mapWidth the width [x] of the map
-     * @param mapHeight the height [y] of the map
+     * @param canvasWidth the width [x] of the canvas
+     * @param canvasHeight the height [y] of the canvas
      * @param tileWidth the width [x] of each tile, or Point
      * @param tileHeight the height [y] of each tile, or Point
      * @param elevationMax the maximum elevation [z] of the map
      * @param elevationMin the minimum elevation [z] of the map
      */
-    public HeightMap(int mapWidth, int mapHeight, int tileWidth, int tileHeight, double elevationMax, double elevationMin) {
+    public HeightMap(int canvasWidth, int canvasHeight, int tileWidth, int tileHeight, double elevationMax, double elevationMin) {
         this.elevationMax = elevationMax;
         this.elevationMin = elevationMin;
 
@@ -63,19 +63,19 @@ public class HeightMap {
             P[256+i] = P[i] = PERMUTATION[i];
         }
 
-        int numTilesX = mapWidth / tileWidth;
-        int numTilesY = mapHeight / tileHeight;
+        int numTilesX = canvasWidth / tileWidth;
+        int numTilesY = canvasHeight / tileHeight;
 
-        Random r = new Random();
+        this.map = new Point[numTilesX * numTilesY];
 
         for (int t = 0; t < numTilesX * numTilesY; t++) {
             double x = t % numTilesX;
             double y = (t - x) / numTilesX;
-            r = new Random();
+            Random r = new Random();
             x += r.nextDouble();
             y += r.nextDouble();
 
-            this.map.add(new Point(x, y, lerp(noise(x, y, STRETCH_FACTOR), (elevationMin + elevationMax) / 2, elevationMax), tileWidth, tileHeight));
+            this.map[t] = new Point(new double[]{x, y, lerp(noise(x, y, STRETCH_FACTOR), (elevationMin + elevationMax) / 2, elevationMax)}, tileWidth, tileHeight);
         }
     }
 
@@ -146,7 +146,7 @@ public class HeightMap {
         }
     }
 
-    public ArrayList<Point> getPoints() {
+    public Point[] getPoints() {
         return map;
     }
 
