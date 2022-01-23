@@ -3,7 +3,8 @@ package projects.neldermead;
 import java.util.Random;
 
 /**
- * TODO: Fix lack of uniqueness across generations (is a different noise function required?)
+ * TODO: Fix lack of uniqueness across generations (Is a different noise function required? It's not a product of which
+ *  tile is chosen as the initial tile...)
  */
 public class HeightMap {
 
@@ -66,12 +67,34 @@ public class HeightMap {
 
         this.map = new Point[numTilesX * numTilesY];
 
-        for (int t = 0; t < numTilesX * numTilesY; t++) {
+//        for (int t = 0; t < numTilesX * numTilesY; t++) {
+//            double x = t % numTilesX;
+//            double y = (t - x) / numTilesX;
+//            Random r = new Random();
+//            x += r.nextDouble();
+//            y += r.nextDouble();
+//
+//            this.map[t] = new Point(new double[]{x, y, lerp(noise(x, y, STRETCH_FACTOR), (elevationMin + elevationMax) / 2, elevationMax)}, tileSize);
+//        }
+
+        Random r1 = new Random();
+        int i = r1.nextInt(numTilesX * numTilesY);
+        System.out.println(i + " " + numTilesX * numTilesY);
+        for (int t = 0; t < i; t++) {
             double x = t % numTilesX;
             double y = (t - x) / numTilesX;
-            Random r = new Random();
-            x += r.nextDouble();
-            y += r.nextDouble();
+            Random r2 = new Random();
+            x += r2.nextDouble();
+            y += r2.nextDouble();
+
+            this.map[t] = new Point(new double[]{x, y, lerp(noise(x, y, STRETCH_FACTOR), (elevationMin + elevationMax) / 2, elevationMax)}, tileSize);
+        }
+        for (int t = i; t < numTilesX * numTilesY; t++) {
+            double x = t % numTilesX;
+            double y = (t - x) / numTilesX;
+            Random r2 = new Random();
+            x += r2.nextDouble();
+            y += r2.nextDouble();
 
             this.map[t] = new Point(new double[]{x, y, lerp(noise(x, y, STRETCH_FACTOR), (elevationMin + elevationMax) / 2, elevationMax)}, tileSize);
         }
