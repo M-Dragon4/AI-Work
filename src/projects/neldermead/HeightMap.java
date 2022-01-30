@@ -154,7 +154,7 @@ public class HeightMap {
 
     public Point getPoint(int x, int y) {
         for (Point p : map) {
-            if ((((int)Math.floor(p.getX())) * p.getTileSize() == x) && (((int)Math.floor(p.getY())) * p.getTileSize() == y)) {
+            if (((int)Math.floor(p.getX()) == x) && ((int)Math.floor(p.getY()) == y)) {
                 return p;
             }
         }

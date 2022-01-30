@@ -71,7 +71,7 @@ public class Simplex {
                 double one_y = HeightMap.lerp(r.nextDouble(), ORIGIN_Y, map_height);
                 one.setX(Math.floor(one_x));
                 one.setY(Math.floor(one_y));
-                one.setZ(MAP.getPoint(((int)Math.floor(one.getX())) * one.getTileSize(), ((int)Math.floor(one.getY())) * one.getTileSize()).getZ());
+                one.setZ(MAP.getPoint((int)Math.floor(one.getX()), (int)Math.floor(one.getY())).getZ());
                 one.setTileSize(TILE_SIZE);
                 two.setTileSize(TILE_SIZE);
                 three.setTileSize(TILE_SIZE);
@@ -98,8 +98,8 @@ public class Simplex {
                     three.setY(Math.floor(one_y - map_height / 8));
                 }
 
-                two.setZ(MAP.getPoint(((int)Math.floor(two.getX())) * two.getTileSize(), ((int)Math.floor(two.getY())) * two.getTileSize()).getZ());
-                three.setZ(MAP.getPoint(((int)Math.floor(three.getX())) * three.getTileSize(), ((int)Math.floor(three.getY())) * three.getTileSize()).getZ());
+                two.setZ(MAP.getPoint((int)Math.floor(two.getX()), (int)Math.floor(two.getY())).getZ());
+                three.setZ(MAP.getPoint((int)Math.floor(three.getX()), (int)Math.floor(three.getY())).getZ());
 
                 initOne = one;
                 initTwo = two;
