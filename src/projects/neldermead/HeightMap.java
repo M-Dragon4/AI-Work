@@ -2,12 +2,9 @@ package projects.neldermead;
 
 import java.util.Random;
 
-/**
- * TODO: Play around with STRETCH_FACTOR to find the best value for it
- */
 public class HeightMap {
 
-    private final double STRETCH_FACTOR = 32.0;
+    private final double STRETCH_FACTOR = 36.0;
     private Point[] map;
     private double elevationMax, elevationMin;
 
