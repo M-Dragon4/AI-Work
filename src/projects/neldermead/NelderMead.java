@@ -6,9 +6,7 @@ import java.awt.*;
 /**
  * This is a visual implementation of the Nelder Mead Algorithm for 2D. The objective of this implementation is to find
  * the highest region on a randomly generated surface (visualized as a topographic map)
- * TODO: Fix oscillatory response bug (ensure h, s, l are annotated correctly; ensure expansion/contraction appropriately
- *  overwrite h and only h; why is h_ the same as h?); Fix e existence conditional; Check expanion()'s theta; Fix
- *  incorrect reflection() evaluation
+ * TODO: Fix oscillatory response bug;
  *
  */
 public class NelderMead implements Runnable {
@@ -200,21 +198,22 @@ public class NelderMead implements Runnable {
         double y = h.getY() - m_y;
 
         double theta = Math.atan(y / x);
-        if (theta < 0 && x > 0) theta += (2 * Math.PI);
-        else if ((theta > 0 && x < 0) || (theta < 0 && x < 0)) theta += Math.PI;
+        if (x < 0 && y > 0) theta *= -1;
+        else if (x > 0 && y > 0 || x > 0 && y < 0) theta = Math.PI - theta;
+        else theta = 2 * Math.PI - theta;
 
         if (0 <= theta && theta < Math.PI / 2) {
-            e_x = m_x - (2 * x);
-            e_y = m_y - (2 * y);
+            e_x = m_x + (2 * Math.abs(x));
+            e_y = m_y - (2 * Math.abs(y));
         } else if (Math.PI / 2 <= theta && theta < Math.PI) {
-            e_x = m_x + (2 * x);
-            e_y = m_y - (2 * y);
+            e_x = m_x - (2 * Math.abs(x));
+            e_y = m_y - (2 * Math.abs(y));
         } else if (Math.PI <= theta && theta < (3 * Math.PI) / 2) {
-            e_x = m_x + (2 * x);
-            e_y = m_y + (2 * y);
+            e_x = m_x - (2 * Math.abs(x));
+            e_y = m_y + (2 * Math.abs(y));
         } else {
-            e_x = m_x - (2 * x);
-            e_y = m_y + (2 * y);
+            e_x = m_x + (2 * Math.abs(x));
+            e_y = m_y + (2 * Math.abs(y));
         }
 
         Point e = new Point(new double[]{e_x, e_y, canvas.getHeightMap().getPoint((int)e_x, (int)e_y).getZ()}, TILE_SIZE);
@@ -285,6 +284,8 @@ public class NelderMead implements Runnable {
      * @return true if the Simplex's vertices are fewer than three tiles apart
      */
     public boolean checkIteration() {
+        annotate();
+
         double ls = Math.sqrt((s.getX() - l.getX())*(s.getX() - l.getX()) + (s.getY() - l.getY())*(s.getY() - l.getY()));
         System.out.println("ls: " + ls);
         double sh = Math.sqrt((h.getX() - s.getX())*(h.getX() - s.getX()) + (h.getY() - s.getY())*(h.getY() - s.getY()));
@@ -294,16 +295,4 @@ public class NelderMead implements Runnable {
 
         return ls < VICTORY_DISTANCE && sh < VICTORY_DISTANCE && hl < VICTORY_DISTANCE;
     }
-
-    /**
-     * Theoretically, l is annotated as the best point, so this method shouldn't need to exist.
-     *
-     * Once the Simplex is small enough, the best guess is the Point with the greatest z-coordinate
-     * @return the Point with the best (greatest) z-coordinate
-     */
-//    public Point bestPoint() {
-//        if (canvas.getSimplex().getOne().getZ() > canvas.getSimplex().getTwo().getZ() && canvas.getSimplex().getOne().getZ() > canvas.getSimplex().getThree().getZ()) return canvas.getSimplex().getOne();
-//        else if (canvas.getSimplex().getTwo().getZ() > canvas.getSimplex().getThree().getZ()) return canvas.getSimplex().getTwo();
-//        else return canvas.getSimplex().getThree();
-//    }
 }
