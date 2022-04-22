@@ -2,12 +2,16 @@ package projects.neldermead;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * This is a visual implementation of the Nelder Mead Algorithm for 2D. The objective of this implementation is to find
- * the highest region on a randomly generated surface (visualized as a topographic map)
- * TODO: Fix oscillatory response bug;
- *
+ * the highest region on a randomly generated surface (visualized as a topographic map).
+ * Theoretically, this algorithm can be applied to an N-dimensional data set to find the region of best solution.
+ * However, it is important to note that the region of best solution may only be local--there may exist a region of the
+ * data that the algorithm was not led to that is better than the solution set it finds.
+ * TODO: Fix oscillatory response bug; Fix lost vertex bug
  */
 public class NelderMead implements Runnable {
 
@@ -38,7 +42,8 @@ public class NelderMead implements Runnable {
     private final double ELEVATION_MAX = 100.0; //Arbitrary
     private final double ELEVATION_MIN = 0.0; //Arbitrary
     private boolean running = false;
-    private int isH;
+    private Set<String> pointHistory = new HashSet<>();
+    private int isH, isS;
     private Point h, s, l, r;
     private Thread buttonThread = null;
 
@@ -101,7 +106,8 @@ public class NelderMead implements Runnable {
                         System.out.println("s_: " + s.getX() + " " + s.getY() + " " + s.getZ());
                         System.out.println("l_: " + l.getX() + " " + l.getY() + " " + l.getZ());
                         if (checkIteration()) {
-                            System.out.println("The best guess for the highest elevation is " + l.getZ());
+                            Point centroid = centroid(canvas.getSimplex());
+                            System.out.println("The best guess for the highest elevation is " + centroid.getZ());
                             running = false;
                         }
                         Thread.sleep(WAIT);
@@ -135,43 +141,56 @@ public class NelderMead implements Runnable {
      * h denotes worst (least) z-coordinate
      */
     public void annotate() {
-        System.out.println("z1: " + canvas.getSimplex().getOne().getZ());
-        System.out.println("z2: " + canvas.getSimplex().getTwo().getZ());
-        System.out.println("z3: " + canvas.getSimplex().getThree().getZ());
-        if (canvas.getSimplex().getOne().getZ() < canvas.getSimplex().getTwo().getZ() && canvas.getSimplex().getOne().getZ() < canvas.getSimplex().getThree().getZ()) {
-            h = canvas.getSimplex().getOne();
+        System.out.println("z1: " + canvas.getSimplex().getPoint(1).getZ());
+        System.out.println("z2: " + canvas.getSimplex().getPoint(2).getZ());
+        System.out.println("z3: " + canvas.getSimplex().getPoint(3).getZ());
+        if (canvas.getSimplex().getPoint(1).getZ() < canvas.getSimplex().getPoint(2).getZ() && canvas.getSimplex().getPoint(1).getZ() < canvas.getSimplex().getPoint(3).getZ()) {
+            h = canvas.getSimplex().getPoint(1);
             isH = 1;
-            if (canvas.getSimplex().getTwo().getZ() < canvas.getSimplex().getThree().getZ()) {
-                s = canvas.getSimplex().getTwo();
-                l = canvas.getSimplex().getThree();
+            if (canvas.getSimplex().getPoint(2).getZ() < canvas.getSimplex().getPoint(3).getZ()) {
+                s = canvas.getSimplex().getPoint(2);
+                isS = 2;
+                l = canvas.getSimplex().getPoint(3);
             } else {
-                s = canvas.getSimplex().getThree();
-                l = canvas.getSimplex().getTwo();
+                s = canvas.getSimplex().getPoint(3);
+                isS = 3;
+                l = canvas.getSimplex().getPoint(2);
             }
-        } else if (canvas.getSimplex().getTwo().getZ() < canvas.getSimplex().getOne().getZ() && canvas.getSimplex().getTwo().getZ() < canvas.getSimplex().getThree().getZ()) {
-            h = canvas.getSimplex().getTwo();
+        } else if (canvas.getSimplex().getPoint(2).getZ() < canvas.getSimplex().getPoint(1).getZ() && canvas.getSimplex().getPoint(2).getZ() < canvas.getSimplex().getPoint(3).getZ()) {
+            h = canvas.getSimplex().getPoint(2);
             isH = 2;
-            if (canvas.getSimplex().getOne().getZ() < canvas.getSimplex().getThree().getZ()) {
-                s = canvas.getSimplex().getOne();
-                l = canvas.getSimplex().getThree();
+            if (canvas.getSimplex().getPoint(1).getZ() < canvas.getSimplex().getPoint(3).getZ()) {
+                s = canvas.getSimplex().getPoint(1);
+                isS = 1;
+                l = canvas.getSimplex().getPoint(3);
             } else {
-                s = canvas.getSimplex().getThree();
-                l = canvas.getSimplex().getOne();
+                s = canvas.getSimplex().getPoint(3);
+                isS = 3;
+                l = canvas.getSimplex().getPoint(1);
             }
         } else {
-            h = canvas.getSimplex().getThree();
+            h = canvas.getSimplex().getPoint(3);
             isH = 3;
-            if (canvas.getSimplex().getOne().getZ() < canvas.getSimplex().getTwo().getZ()) {
-                s = canvas.getSimplex().getOne();
-                l = canvas.getSimplex().getTwo();
+            if (canvas.getSimplex().getPoint(1).getZ() < canvas.getSimplex().getPoint(2).getZ()) {
+                s = canvas.getSimplex().getPoint(1);
+                isS = 1;
+                l = canvas.getSimplex().getPoint(2);
             } else {
-                s = canvas.getSimplex().getTwo();
-                l = canvas.getSimplex().getOne();
+                s = canvas.getSimplex().getPoint(2);
+                isS = 2;
+                l = canvas.getSimplex().getPoint(1);
             }
         }
         System.out.println("h: " + h.getX() + " " + h.getY() + " " + h.getZ());
         System.out.println("s: " + s.getX() + " " + s.getY() + " " + s.getZ());
         System.out.println("l: " + l.getX() + " " + l.getY() + " " + l.getZ());
+
+        String h_key = generateKey(h);
+        String s_key = generateKey(s);
+        String l_key = generateKey(l);
+        if(!pointHistory.contains(h_key)) pointHistory.add(h_key);
+        if(!pointHistory.contains(s_key)) pointHistory.add(s_key);
+        if(!pointHistory.contains(l_key)) pointHistory.add(l_key);
     }
 
     /**
@@ -220,31 +239,32 @@ public class NelderMead implements Runnable {
 
         if (e.getZ() != 0.0) {
             switch(isH) {
+
                 case 1: {
-                    canvas.getSimplex().setOne(e);
+                    canvas.getSimplex().setPoint(1, e);
                     break;
                 }
                 case 2: {
-                    canvas.getSimplex().setTwo(e);
+                    canvas.getSimplex().setPoint(2, e);
                     break;
                 }
                 case 3: {
-                    canvas.getSimplex().setThree(e);
+                    canvas.getSimplex().setPoint(3, e);
                     break;
                 }
             }
         } else {
             switch(isH) {
                 case 1: {
-                    canvas.getSimplex().setOne(r);
+                    canvas.getSimplex().setPoint(1, r);
                     break;
                 }
                 case 2: {
-                    canvas.getSimplex().setTwo(r);
+                    canvas.getSimplex().setPoint(2, r);
                     break;
                 }
                 case 3: {
-                    canvas.getSimplex().setThree(r);
+                    canvas.getSimplex().setPoint(3, r);
                     break;
                 }
             }
@@ -262,19 +282,58 @@ public class NelderMead implements Runnable {
 
         Point c = new Point(new double[]{c_x, c_y, canvas.getHeightMap().getPoint((int)c_x, (int)c_y).getZ()}, TILE_SIZE);
 
-        switch(isH) {
-            case 1: {
-                canvas.getSimplex().setOne(c);
-                break;
+        String c_key = generateKey(c);
+        if(!pointHistory.contains(c_key)) {
+            pointHistory.add(c_key);
+            switch(isH) {
+                case 1: {
+                    canvas.getSimplex().setPoint(1, c);
+                    break;
+                }
+                case 2: {
+                    canvas.getSimplex().setPoint(2, c);
+                    break;
+                }
+                case 3: {
+                    canvas.getSimplex().setPoint(3, c);
+                    break;
+                }
             }
-            case 2: {
-                canvas.getSimplex().setTwo(c);
-                break;
+        } else {
+            Point temp_h;
+            switch(isH) {
+                case 1: {
+                    temp_h = canvas.getSimplex().getPoint(1);
+                    break;
+                }
+                case 2: {
+                    temp_h = canvas.getSimplex().getPoint(2);
+                    break;
+                }
+                case 3: {
+                    temp_h = canvas.getSimplex().getPoint(3);
+                    break;
+                }
+                default: temp_h = null;
             }
-            case 3: {
-                canvas.getSimplex().setThree(c);
-                break;
+            switch(isS) {
+                case 1: {
+                    canvas.getSimplex().setPoint(isH, s);
+                    canvas.getSimplex().setPoint(1, temp_h);
+                    break;
+                }
+                case 2: {
+                    canvas.getSimplex().setPoint(isH, s);
+                    canvas.getSimplex().setPoint(2, temp_h);
+                    break;
+                }
+                case 3: {
+                    canvas.getSimplex().setPoint(isH, s);
+                    canvas.getSimplex().setPoint(3, temp_h);
+                    break;
+                }
             }
+            contract();
         }
     }
 
@@ -294,5 +353,30 @@ public class NelderMead implements Runnable {
         System.out.println("hl: " + hl);
 
         return ls < VICTORY_DISTANCE && sh < VICTORY_DISTANCE && hl < VICTORY_DISTANCE;
+    }
+
+    /**
+     * Generates a key for a given point based upon that point's (x,y,z) coordinates
+     * @param p the point
+     * @return the String coordinates of the point for the pointHistory HashSet
+     */
+    public String generateKey(Point p) {
+        int x = (int)p.getX();
+        int y = (int)p.getY();
+        int z = (int)p.getZ();
+
+        return Integer.toString(x) + Integer.toString(y) + Integer.toString(z);
+    }
+
+    /**
+     * Calculates the centroid of the given Simplex and maps that to the equivalent Point
+     * @param s the Simplex
+     * @return the Point of the centroid
+     */
+    public Point centroid(Simplex s) {
+        int x = (int)((s.getPoint(1).getX() + s.getPoint(2).getX() + s.getPoint(3).getX()) / 3);
+        int y = (int)((s.getPoint(1).getY() + s.getPoint(2).getY() + s.getPoint(3).getY()) / 3);
+
+        return map.getPoint(x, y);
     }
 }

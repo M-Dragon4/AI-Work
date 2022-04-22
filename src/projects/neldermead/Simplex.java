@@ -42,7 +42,7 @@ public class Simplex {
     }
 
     /**
-     * Initializes the simplex by setting each vertex's (x, y) coordinate
+     * Initializes the simplex by setting each vertex's (x,y) coordinate
      * Depends upon the context of the initialization
      * @param code the integer to determine the context
      */
@@ -108,27 +108,36 @@ public class Simplex {
         }
     }
 
-    public Point getOne() {
-        return one;
+    public Point getPoint(int index) {
+        switch(index) {
+            case 1: {
+                return one;
+            }
+            case 2: {
+                return two;
+            }
+            case 3: {
+                return three;
+            }
+            default: return null;
+        }
     }
 
-    public void setOne(Point p) {
-        this.one = p;
-    }
-
-    public Point getTwo() {
-        return two;
-    }
-
-    public void setTwo(Point p) {
-        this.two = p;
-    }
-
-    public Point getThree() {
-        return three;
-    }
-
-    public void setThree(Point p) {
-        this.three = p;
+    public void setPoint(int index, Point p) {
+        switch(index) {
+            case 1: {
+                this.one = p;
+                break;
+            }
+            case 2: {
+                this.two = p;
+                break;
+            }
+            case 3: {
+                this.three = p;
+                break;
+            }
+            default: break;
+        }
     }
 }

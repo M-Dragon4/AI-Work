@@ -110,12 +110,12 @@ public class Canvas extends JPanel {
         }
         g2d.setColor(Color.BLACK);
         g2d.setStroke(new BasicStroke(2));
-        g2d.drawLine((int)simplex.getThree().getX() * simplex.getThree().getTileSize(), (int)simplex.getThree().getY() * simplex.getThree().getTileSize(),
-                (int)simplex.getTwo().getX() * simplex.getTwo().getTileSize(), (int)simplex.getTwo().getY() * simplex.getTwo().getTileSize());
-        g2d.drawLine((int)simplex.getTwo().getX() * simplex.getTwo().getTileSize(), (int)simplex.getTwo().getY() * simplex.getTwo().getTileSize(),
-                (int)simplex.getOne().getX() * simplex.getOne().getTileSize(), (int)simplex.getOne().getY() * simplex.getOne().getTileSize());
-        g2d.drawLine((int)simplex.getOne().getX() * simplex.getOne().getTileSize(), (int)simplex.getOne().getY() * simplex.getOne().getTileSize(),
-                (int)simplex.getThree().getX() * simplex.getThree().getTileSize(), (int)simplex.getThree().getY() * simplex.getThree().getTileSize());
+        g2d.drawLine((int)simplex.getPoint(3).getX() * simplex.getPoint(3).getTileSize(), (int)simplex.getPoint(3).getY() * simplex.getPoint(3).getTileSize(),
+                (int)simplex.getPoint(2).getX() * simplex.getPoint(2).getTileSize(), (int)simplex.getPoint(2).getY() * simplex.getPoint(2).getTileSize());
+        g2d.drawLine((int)simplex.getPoint(2).getX() * simplex.getPoint(2).getTileSize(), (int)simplex.getPoint(2).getY() * simplex.getPoint(2).getTileSize(),
+                (int)simplex.getPoint(1).getX() * simplex.getPoint(1).getTileSize(), (int)simplex.getPoint(1).getY() * simplex.getPoint(1).getTileSize());
+        g2d.drawLine((int)simplex.getPoint(1).getX() * simplex.getPoint(1).getTileSize(), (int)simplex.getPoint(1).getY() * simplex.getPoint(1).getTileSize(),
+                (int)simplex.getPoint(3).getX() * simplex.getPoint(3).getTileSize(), (int)simplex.getPoint(3).getY() * simplex.getPoint(3).getTileSize());
     }
 
     /**
