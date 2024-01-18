@@ -2,6 +2,7 @@ package projects.neldermead;
 
 import javax.swing.*;
 import java.awt.*;
+import java.text.DecimalFormat;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -11,8 +12,7 @@ import java.util.HashSet;
  * Theoretically, this algorithm can be applied to an N-dimensional data set to find the region of best solution.
  * However, it is important to note that the region of best solution may only be local--there may exist a region of the
  * data that the algorithm was not led to that is better than the solution set it finds.
- * TODO: Fix oscillatory response bug; Fix lost vertex bug (the simplex turns into a line, which persists even after
- *  regenerating or reconfiguring; causes infinite contraction loop too)
+ * TODO: Fix oscillatory response bug
  */
 public class NelderMead implements Runnable {
 
@@ -43,7 +43,7 @@ public class NelderMead implements Runnable {
     private final double ELEVATION_MAX = 100.0; //Arbitrary
     private final double ELEVATION_MIN = 0.0; //Arbitrary
     private boolean running = false;
-    private final Set<String> pointHistory = new HashSet<>();
+    private final Set<String> pointHistory = new HashSet<>(); //Set of all worst Points the algorithm has found
     private int isH, isS;
     private Point h, s, l, r;
     private Thread buttonThread = null;
@@ -110,6 +110,7 @@ public class NelderMead implements Runnable {
                         if (checkIteration()) {
                             Point centroid = centroid(canvas.getSimplex());
                             System.out.println("The best guess for the highest elevation is " + centroid.getZ());
+                            pointHistory.clear();
                             running = false;
                         }
                         Thread.sleep(WAIT);
@@ -188,15 +189,15 @@ public class NelderMead implements Runnable {
         System.out.println("l: " + l.getX() + " " + l.getY() + " " + l.getZ());
 
         String h_key = generateKey(h);
-        String s_key = generateKey(s);
-        String l_key = generateKey(l);
+        //String s_key = generateKey(s);
+        //String l_key = generateKey(l);
         if(!pointHistory.contains(h_key)) pointHistory.add(h_key);
-        if(!pointHistory.contains(s_key)) pointHistory.add(s_key);
-        if(!pointHistory.contains(l_key)) pointHistory.add(l_key);
+        //if(!pointHistory.contains(s_key)) pointHistory.add(s_key);
+        //if(!pointHistory.contains(l_key)) pointHistory.add(l_key);
     }
 
     /**
-     * Reflects Point h about the midpoint (c) of the line drawn from Points l and s
+     * Reflects Point h about the midpoint (m) of the line drawn from Points l and s
      * @return true if the reflected point has a better (greater) z-coordinate than h
      */
     public boolean reflection() {
@@ -209,7 +210,7 @@ public class NelderMead implements Runnable {
     }
 
     /**
-     * If the reflection is successful, make r twice as far from c as it was
+     * If the reflection is successful, make r twice as far from m as it was
      */
     public void expand() {
         double e_x, e_y;
@@ -273,7 +274,7 @@ public class NelderMead implements Runnable {
     }
 
     /**
-     * If the reflection is unsuccessful, make r the midpoint of h and c
+     * If the reflection is unsuccessful, make r the midpoint of h and m
      */
     public void contract() {
         double m_x = (l.getX() + s.getX()) / 2;
@@ -287,7 +288,7 @@ public class NelderMead implements Runnable {
         if(!pointHistory.contains(c_key)) {
             System.out.println("pointHistory does NOT contain " + c_key);
             pointHistory.add(c_key);
-            //System.out.println("Added " + c_key);
+
             switch(isH) {
                 case 1: {
                     canvas.getSimplex().setPoint(1, c);
@@ -304,40 +305,25 @@ public class NelderMead implements Runnable {
             }
         } else {
             System.out.println("pointHistory contains " + c_key);
-            Point temp_h;
+            double c_prime_x = 2*((l.getX() + s.getX()) / 2) - c.getX();
+            double c_prime_y = 2*((l.getY() + s.getY()) / 2) - c.getY();
+
+            Point c_prime = new Point(new double[]{c_prime_x, c_prime_y, canvas.getHeightMap().getPoint((int)c_prime_x, (int)c_prime_y).getZ()}, TILE_SIZE);
+
             switch(isH) {
                 case 1: {
-                    temp_h = canvas.getSimplex().getPoint(1);
+                    canvas.getSimplex().setPoint(1, c_prime);
                     break;
                 }
                 case 2: {
-                    temp_h = canvas.getSimplex().getPoint(2);
+                    canvas.getSimplex().setPoint(2, c_prime);
                     break;
                 }
                 case 3: {
-                    temp_h = canvas.getSimplex().getPoint(3);
-                    break;
-                }
-                default: temp_h = null;
-            }
-            switch(isS) {
-                case 1: {
-                    canvas.getSimplex().setPoint(isH, s);
-                    canvas.getSimplex().setPoint(1, temp_h);
-                    break;
-                }
-                case 2: {
-                    canvas.getSimplex().setPoint(isH, s);
-                    canvas.getSimplex().setPoint(2, temp_h);
-                    break;
-                }
-                case 3: {
-                    canvas.getSimplex().setPoint(isH, s);
-                    canvas.getSimplex().setPoint(3, temp_h);
+                    canvas.getSimplex().setPoint(3, c_prime);
                     break;
                 }
             }
-            contract();
         }
     }
 
@@ -362,11 +348,9 @@ public class NelderMead implements Runnable {
      * @return the String coordinates of the point for the pointHistory HashSet
      */
     public String generateKey(Point p) {
-        int x = (int)p.getX();
-        int y = (int)p.getY();
-        int z = (int)p.getZ();
+        DecimalFormat df = new DecimalFormat("#.####");
 
-        return Integer.toString(x) + y + z;
+        return df.format(p.getX()) + "_" + df.format(p.getY()) + "_" + df.format(p.getZ());
     }
 
     /**
