@@ -5,8 +5,8 @@ import java.util.Random;
 public class HeightMap {
 
     private final double STRETCH_FACTOR = 36.0;
-    private Point[] map;
-    private double elevationMax, elevationMin;
+    private final Point[] map;
+    private final double elevationMax, elevationMin;
 
     private final int[] P = new int[512], PERMUTATION = new int[256];
 
@@ -30,7 +30,7 @@ public class HeightMap {
     }
 
     /**
-     * Generates a Height Map that is, along an imaginary z-axis, centered around the median elevation, given the following parameters:
+     * Generates a Height Map that is centered around the median elevation along an imaginary z-axis, given the following parameters:
      * @param canvasWidth the width [x] of the canvas
      * @param canvasHeight the height [y] of the canvas
      * @param tileSize the height and width of each tile, or Point
@@ -66,7 +66,7 @@ public class HeightMap {
     /**
      * Fills the PERMUTATION array with the numbers 0 to 255 in a random order without repetition
      */
-    public void permute() {
+    private void permute() {
         for (int i = 0; i < PERMUTATION.length; i++) {
             PERMUTATION[i] = i;
         }

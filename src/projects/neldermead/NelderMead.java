@@ -11,7 +11,8 @@ import java.util.HashSet;
  * Theoretically, this algorithm can be applied to an N-dimensional data set to find the region of best solution.
  * However, it is important to note that the region of best solution may only be local--there may exist a region of the
  * data that the algorithm was not led to that is better than the solution set it finds.
- * TODO: Fix oscillatory response bug; Fix lost vertex bug
+ * TODO: Fix oscillatory response bug; Fix lost vertex bug (the simplex turns into a line, which persists even after
+ *  regenerating or reconfiguring; causes infinite contraction loop too)
  */
 public class NelderMead implements Runnable {
 
@@ -42,7 +43,7 @@ public class NelderMead implements Runnable {
     private final double ELEVATION_MAX = 100.0; //Arbitrary
     private final double ELEVATION_MIN = 0.0; //Arbitrary
     private boolean running = false;
-    private Set<String> pointHistory = new HashSet<>();
+    private final Set<String> pointHistory = new HashSet<>();
     private int isH, isS;
     private Point h, s, l, r;
     private Thread buttonThread = null;
@@ -94,6 +95,9 @@ public class NelderMead implements Runnable {
                 try {
                     while (running) {
                         //Nelder Mead
+//                        System.out.println("h_: " + h.getX() + " " + h.getY() + " " + h.getZ());
+//                        System.out.println("s_: " + s.getX() + " " + s.getY() + " " + s.getZ());
+//                        System.out.println("l_: " + l.getX() + " " + l.getY() + " " + l.getZ());
                         annotate();
                         if (reflection()) {
                             System.out.println("Expanding!");
@@ -102,9 +106,7 @@ public class NelderMead implements Runnable {
                             System.out.println("Contracting!");
                             contract();
                         }
-                        System.out.println("h_: " + h.getX() + " " + h.getY() + " " + h.getZ());
-                        System.out.println("s_: " + s.getX() + " " + s.getY() + " " + s.getZ());
-                        System.out.println("l_: " + l.getX() + " " + l.getY() + " " + l.getZ());
+
                         if (checkIteration()) {
                             Point centroid = centroid(canvas.getSimplex());
                             System.out.println("The best guess for the highest elevation is " + centroid.getZ());
@@ -141,9 +143,9 @@ public class NelderMead implements Runnable {
      * h denotes worst (least) z-coordinate
      */
     public void annotate() {
-        System.out.println("z1: " + canvas.getSimplex().getPoint(1).getZ());
-        System.out.println("z2: " + canvas.getSimplex().getPoint(2).getZ());
-        System.out.println("z3: " + canvas.getSimplex().getPoint(3).getZ());
+//        System.out.println("z1: " + canvas.getSimplex().getPoint(1).getZ());
+//        System.out.println("z2: " + canvas.getSimplex().getPoint(2).getZ());
+//        System.out.println("z3: " + canvas.getSimplex().getPoint(3).getZ());
         if (canvas.getSimplex().getPoint(1).getZ() < canvas.getSimplex().getPoint(2).getZ() && canvas.getSimplex().getPoint(1).getZ() < canvas.getSimplex().getPoint(3).getZ()) {
             h = canvas.getSimplex().getPoint(1);
             isH = 1;
@@ -202,7 +204,7 @@ public class NelderMead implements Runnable {
         double r_y = 2*((l.getY() + s.getY()) / 2) - h.getY();
 
         r = new Point(new double[]{r_x, r_y, canvas.getHeightMap().getPoint((int)r_x, (int)r_y).getZ()}, TILE_SIZE);
-        System.out.println("r: " + r.getX() + " " + r.getY() + " " + r.getZ());
+//        System.out.println("r: " + r.getX() + " " + r.getY() + " " + r.getZ());
         return r.getZ() > h.getZ();
     }
 
@@ -237,9 +239,8 @@ public class NelderMead implements Runnable {
 
         Point e = new Point(new double[]{e_x, e_y, canvas.getHeightMap().getPoint((int)e_x, (int)e_y).getZ()}, TILE_SIZE);
 
-        if (e.getZ() != 0.0) {
+        if (e.getZ() > 0.0) {
             switch(isH) {
-
                 case 1: {
                     canvas.getSimplex().setPoint(1, e);
                     break;
@@ -284,7 +285,9 @@ public class NelderMead implements Runnable {
 
         String c_key = generateKey(c);
         if(!pointHistory.contains(c_key)) {
+            System.out.println("pointHistory does NOT contain " + c_key);
             pointHistory.add(c_key);
+            //System.out.println("Added " + c_key);
             switch(isH) {
                 case 1: {
                     canvas.getSimplex().setPoint(1, c);
@@ -300,6 +303,7 @@ public class NelderMead implements Runnable {
                 }
             }
         } else {
+            System.out.println("pointHistory contains " + c_key);
             Point temp_h;
             switch(isH) {
                 case 1: {
@@ -343,14 +347,11 @@ public class NelderMead implements Runnable {
      * @return true if the Simplex's vertices are fewer than three tiles apart
      */
     public boolean checkIteration() {
-        annotate();
+        //annotate();
 
         double ls = Math.sqrt((s.getX() - l.getX())*(s.getX() - l.getX()) + (s.getY() - l.getY())*(s.getY() - l.getY()));
-        System.out.println("ls: " + ls);
         double sh = Math.sqrt((h.getX() - s.getX())*(h.getX() - s.getX()) + (h.getY() - s.getY())*(h.getY() - s.getY()));
-        System.out.println("sh: " + sh);
         double hl = Math.sqrt((l.getX() - h.getX())*(l.getX() - h.getX()) + (l.getY() - h.getY())*(l.getY() - h.getY()));
-        System.out.println("hl: " + hl);
 
         return ls < VICTORY_DISTANCE && sh < VICTORY_DISTANCE && hl < VICTORY_DISTANCE;
     }
@@ -365,7 +366,7 @@ public class NelderMead implements Runnable {
         int y = (int)p.getY();
         int z = (int)p.getZ();
 
-        return Integer.toString(x) + Integer.toString(y) + Integer.toString(z);
+        return Integer.toString(x) + y + z;
     }
 
     /**
