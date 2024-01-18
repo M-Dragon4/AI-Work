@@ -1,5 +1,6 @@
 package projects;
 
+import util.CastBoolean;
 import util.RandomGenerator;
 import util.Writer;
 import java.io.IOException;
