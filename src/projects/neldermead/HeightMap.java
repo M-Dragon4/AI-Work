@@ -52,12 +52,12 @@ public class HeightMap {
 
         this.map = new Point[numTilesX * numTilesY];
 
-        Random r = new Random();
+        Random random = new Random();
         for (int t = 0; t < numTilesX * numTilesY; t++) {
             double x = t % numTilesX;
             double y = (t - x) / numTilesX;
-            x += r.nextDouble();
-            y += r.nextDouble();
+            x += random.nextDouble();
+            y += random.nextDouble();
 
             this.map[t] = new Point(new double[]{x, y, lerp(noise(x, y, STRETCH_FACTOR), (elevationMin + elevationMax) / 2, elevationMax)}, tileSize);
         }
