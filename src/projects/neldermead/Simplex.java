@@ -12,6 +12,7 @@ public class Simplex {
     private final int RESET_CODE = NelderMead.RESET_CODE;
     private final int RECONFIGURE_CODE = NelderMead.RECONFIGURE_CODE;
     private final int TILE_SIZE = NelderMead.TILE_SIZE;
+    private final Point initOne, initTwo, initThree;
     private Point one, two, three;
 
     /**
@@ -20,10 +21,13 @@ public class Simplex {
     public Simplex() {
         this.one = new Point();
         one.setIndex(1);
+        initOne = one;
         this.two = new Point();
         two.setIndex(2);
+        initTwo = two;
         this.three = new Point();
         three.setIndex(3);
+        initThree = three;
     }
 
     /**
@@ -34,8 +38,11 @@ public class Simplex {
      */
     public Simplex(Point one, Point two, Point three) {
         this.one = one;
+        initOne = this.one;
         this.two = two;
+        initTwo = this.two;
         this.three = three;
+        initThree = this.three;
     }
 
     /**
@@ -50,8 +57,11 @@ public class Simplex {
             //Sends the Simplex to its original coordinates
             case RESET_CODE: {
                 one.setTileSize(TILE_SIZE);
+                one.setCoordinates(initOne.getCoordinates());
                 two.setTileSize(TILE_SIZE);
+                two.setCoordinates(initTwo.getCoordinates());
                 three.setTileSize(TILE_SIZE);
+                three.setCoordinates(initThree.getCoordinates());
             } break;
             /*
             Sends the Simplex to new coordinates.
