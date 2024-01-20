@@ -12,8 +12,7 @@ public class Simplex {
     private final int RESET_CODE = NelderMead.RESET_CODE;
     private final int RECONFIGURE_CODE = NelderMead.RECONFIGURE_CODE;
     private final int TILE_SIZE = NelderMead.TILE_SIZE;
-    private final Point initOne, initTwo, initThree;
-    private Point one, two, three;
+    private Point one, two, three, initOne, initTwo, initThree;
 
     /**
      * Empty Constructor
@@ -104,6 +103,10 @@ public class Simplex {
 
                 two.setZ(MAP.getPoint((int)Math.floor(two.getX()), (int)Math.floor(two.getY())).getZ());
                 three.setZ(MAP.getPoint((int)Math.floor(three.getX()), (int)Math.floor(three.getY())).getZ());
+
+                initOne = one;
+                initTwo = two;
+                initThree = three;
             } break;
         }
     }

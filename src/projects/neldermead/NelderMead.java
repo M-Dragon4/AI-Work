@@ -1,5 +1,6 @@
 package projects.neldermead;
 
+import org.jetbrains.annotations.NotNull;
 import util.CastBoolean;
 import util.RandomGenerator;
 
@@ -15,8 +16,8 @@ import java.util.HashSet;
  * Theoretically, this algorithm can be applied to an N-dimensional data set to find the region of best solution.
  * However, it is important to note that the region of best solution may only be local--there may exist a region of the
  * data that the algorithm was not led to that is better than the solution set it finds.
- * TODO: Fix oscillatory response bug (annotation is correct, but thin strips of terrain can cause h to be
- *  forever flipped across the strip); fix RESET; allow for N-vertex Simplexes
+ * TODO: Fix oscillatory response bug (check actual elevations on the Height Map against the color displayed)
+ *       Allow for N-vertex Simplexes
  */
 public class NelderMead implements Runnable {
 
@@ -50,7 +51,7 @@ public class NelderMead implements Runnable {
     private final double ELEVATION_MIN = 0.0; //Arbitrary
     private boolean running = false;
     private final Set<String> pointHistory = new HashSet<>(); //Set of all worst Points the algorithm has found
-    private Point h, s, l, r;
+    private Point h, s, l, r, r_prime;
     private Thread buttonThread = null;
 
     public void init() {
@@ -213,7 +214,7 @@ public class NelderMead implements Runnable {
                     l.setIndex(v1.getIndex());
                 }
             }
-        } else if (v3.getZ() < v1.getZ() && v3.getZ() < v2.getZ()) {
+        } else {
             System.out.println("V3 IS H");
             h = v3;
             h.setIndex(v3.getIndex());
@@ -242,9 +243,9 @@ public class NelderMead implements Runnable {
             }
         }
 
-        System.out.println("[SIMPLEX] v1: " + v1.getX() + " " + v1.getY() + " " + v1.getZ() + " " + v1.getIndex());
-        System.out.println("[SIMPLEX] v2: " + v2.getX() + " " + v2.getY() + " " + v2.getZ() + " " + v2.getIndex());
-        System.out.println("[SIMPLEX] v3: " + v3.getX() + " " + v3.getY() + " " + v3.getZ() + " " + v3.getIndex());
+//        System.out.println("[SIMPLEX] v1: " + v1.getX() + " " + v1.getY() + " " + v1.getZ() + " " + v1.getIndex());
+//        System.out.println("[SIMPLEX] v2: " + v2.getX() + " " + v2.getY() + " " + v2.getZ() + " " + v2.getIndex());
+//        System.out.println("[SIMPLEX] v3: " + v3.getX() + " " + v3.getY() + " " + v3.getZ() + " " + v3.getIndex());
 
         System.out.println("[POST] h: " + h.getX() + " " + h.getY() + " " + h.getZ() + " " + h.getIndex());
         System.out.println("[POST] s: " + s.getX() + " " + s.getY() + " " + s.getZ() + " " + s.getIndex());
@@ -259,12 +260,23 @@ public class NelderMead implements Runnable {
      * @return true if the reflected point has a better (greater) z-coordinate than h
      */
     public boolean reflection() {
-        double r_x = 2*((l.getX() + s.getX()) / 2) - h.getX();
-        double r_y = 2*((l.getY() + s.getY()) / 2) - h.getY();
+        double r_x = (l.getX() + s.getX()) - h.getX();
+        double r_y = (l.getY() + s.getY()) - h.getY();
 
         r = new Point(new double[]{r_x, r_y, canvas.getHeightMap().getPoint((int)r_x, (int)r_y).getZ()}, TILE_SIZE, h.getIndex());
         System.out.println("[R]: " + r.getZ());
         return r.getZ() > h.getZ();
+    }
+
+    public void reflect(@NotNull Point p) {
+        Point s_prime = h;
+        Point l_prime = l;
+
+        double r_x = (l_prime.getX() + s_prime.getX()) - p.getX();
+        double r_y = (l_prime.getY() + s_prime.getY()) - p.getY();
+
+        r_prime = new Point(new double[]{r_x, r_y, canvas.getHeightMap().getPoint((int)r_x, (int)r_y).getZ()}, TILE_SIZE, p.getIndex());
+        simplex.setPoint(p.getIndex(), r_prime);
     }
 
     /**
@@ -311,7 +323,7 @@ public class NelderMead implements Runnable {
 
     /**
      * If the reflection is unsuccessful, make r the midpoint of h and m (Point c), but if that point has already been a
-     * worst-point, then make r 2/3 the distance from h to m
+     * worst-point, then make s the new h and recalculate
      */
     public void contract() {
         double m_x = (l.getX() + s.getX()) / 2;
@@ -328,13 +340,22 @@ public class NelderMead implements Runnable {
             simplex.setPoint(h.getIndex(), c);
             System.out.println("H IS NOW @ c " + c.getIndex() + " " + c.getZ());
         } else {
-            double c_prime_x = (m_x + 2*h.getX()) / 3;
-            double c_prime_y = (m_y + 2*h.getY()) / 3;
+            RandomGenerator rand = new RandomGenerator();
+            rand.makeUniformValue(1,0,false);
+            boolean coin = CastBoolean.doubleToBoolean(rand.getValue());
 
-            Point c_prime = new Point(new double[]{c_prime_x, c_prime_y, canvas.getHeightMap().getPoint((int)c_prime_x, (int)c_prime_y).getZ()}, TILE_SIZE, h.getIndex());
+            if (coin) {
+                double c_prime_x = (m_x + 2*h.getX()) / 3;
+                double c_prime_y = (m_y + 2*h.getY()) / 3;
 
-            simplex.setPoint(h.getIndex(), c_prime);
-            System.out.println("H IS NOW @ c_prime " + c_prime.getIndex() + " " + c_prime.getZ());
+                Point c_prime = new Point(new double[]{c_prime_x, c_prime_y, canvas.getHeightMap().getPoint((int)c_prime_x, (int)c_prime_y).getZ()}, TILE_SIZE, h.getIndex());
+
+                simplex.setPoint(h.getIndex(), c_prime);
+                System.out.println("H IS NOW @ c_prime " + c_prime.getIndex() + " " + c_prime.getZ());
+            } else {
+                reflect(s);
+                System.out.println("S is reflected about hl");
+            }
         }
     }
 
@@ -358,9 +379,10 @@ public class NelderMead implements Runnable {
      * @return the String coordinates of the point for the pointHistory HashSet
      */
     public String generateKey(Point p) {
-        DecimalFormat df = new DecimalFormat("#.##"); //2 decimal places seems to work well
+        //DecimalFormat df = new DecimalFormat("#.##"); //2 decimal places seems to work well
+        //return df.format(p.getX()) + "_" + df.format(p.getY()) + "_" + df.format(p.getZ());
 
-        return df.format(p.getX()) + "_" + df.format(p.getY()) + "_" + df.format(p.getZ());
+        return Math.round(p.getX()) + "_" + Math.round(p.getY()) + "_" + Math.round(p.getZ());
     }
 
     /**
